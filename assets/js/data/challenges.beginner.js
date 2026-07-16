@@ -27,6 +27,21 @@ export const beginnerChallenges = [
       normalize: { trim: true, lowercase: true },
       formatHint: "flag{...}",
     },
+    debrief: `
+      <p>Developers routinely leave debug comments, "temporary" notes, or
+      even hardcoded credentials in code that ships to production — and
+      anything sent to a browser is fully visible to anyone who looks,
+      comment or not. This is one of the most common real-world security
+      findings: leaked API keys and internal notes committed to public
+      repos or shipped in client-side bundles.</p>
+      <p><strong>Impact:</strong> attackers run automated scanners that
+      constantly search public sites and repositories for exactly this
+      pattern. A single forgotten comment has led to full account or
+      database compromises at real companies.</p>
+      <p><strong>What prevents this:</strong> automated secret-scanning in
+      CI/CD pipelines, pre-commit hooks that block credential-shaped
+      strings, and code review before anything reaches production.</p>
+    `,
   },
   {
     id: "beg-crypto-1",
@@ -56,6 +71,21 @@ export const beginnerChallenges = [
       normalize: { trim: true, lowercase: true },
       formatHint: "flag{...}",
     },
+    debrief: `
+      <p>Caesar/ROT ciphers aren't real security — they're a teaching tool.
+      The real lesson: <strong>obfuscation is not encryption.</strong>
+      Companies sometimes mistake simple substitution or encoding (ROT13,
+      Base64, XOR) for genuine protection of sensitive data, when it offers
+      essentially zero resistance to anyone who looks.</p>
+      <p><strong>Impact:</strong> data "protected" this way is broken in
+      seconds — often faster than it took to encode it in the first place.
+      Relying on it for anything sensitive (passwords, tokens, PII) gives a
+      false sense of security that's arguably worse than no protection at
+      all, since it invites complacency.</p>
+      <p><strong>What prevents this:</strong> use vetted, modern
+      cryptography (AES, etc.) for anything that actually needs
+      confidentiality, and never treat encoding schemes as encryption.</p>
+    `,
   },
   {
     id: "beg-forensics-1",
@@ -86,6 +116,23 @@ export const beginnerChallenges = [
       normalize: { trim: true, lowercase: true },
       formatHint: "flag{...}",
     },
+    debrief: `
+      <p>File formats have well-defined structures, but many parsers and
+      viewers stop reading at the "logical end" without checking whether
+      anything follows. That gap gets used both defensively (watermarking,
+      steganography) and offensively — malware and exfiltrated data have
+      been smuggled inside otherwise-legitimate image files as trailing
+      bytes past the declared end, sometimes called a "polyglot file".</p>
+      <p><strong>Impact:</strong> security tools that only render or
+      preview a file — rather than fully parsing and validating it — can
+      completely miss payloads or exfiltrated data hidden this way,
+      including in systems meant to block exactly that (DLP/upload
+      scanners).</p>
+      <p><strong>What prevents this:</strong> file validation that parses
+      to the exact expected end and flags trailing data, and content
+      scanners that hash/inspect entire files rather than just what
+      renders.</p>
+    `,
   },
   {
     id: "beg-osint-1",
@@ -116,5 +163,21 @@ export const beginnerChallenges = [
       normalize: { trim: true, lowercase: true },
       formatHint: "flag{...}",
     },
+    debrief: `
+      <p>This mirrors real OSINT reconnaissance: people (and companies)
+      sometimes leave sensitive information in metadata, alt-text, or
+      visually-hidden page elements they assume nobody actually reads —
+      and researchers, and attackers, rely on exactly that assumption.
+      It's also a preview of social-engineering recon: attackers who
+      target a specific person or company genuinely read everything
+      public, not just skim it, to build a profile for phishing.</p>
+      <p><strong>Impact:</strong> oversharing "harmless" details, or
+      developers leaving hidden debug/config data on public pages, both
+      hand attackers free reconnaissance material they'd otherwise have to
+      work for.</p>
+      <p><strong>What prevents this:</strong> security-awareness training
+      like this one, and periodic audits of public-facing pages and
+      profiles for accidental data leakage.</p>
+    `,
   },
 ];

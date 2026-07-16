@@ -29,6 +29,22 @@ export const intermediateChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
+    debrief: `
+      <p>Insecure Direct Object Reference (IDOR) is consistently one of the
+      most common vulnerabilities found in real web and mobile apps —
+      "Broken Object Level Authorization" tops OWASP's API Security Top
+      10. Real breaches at major companies have come from exactly this
+      pattern: changing a numeric ID in a URL or API call exposed other
+      users' private data.</p>
+      <p><strong>Impact:</strong> because IDs are often sequential or
+      easily guessable, a single flaw like this can be scripted into mass
+      scraping of every customer's private records, not just one.</p>
+      <p><strong>What prevents this:</strong> the server must verify, on
+      every request, that the authenticated user is specifically
+      authorized for the object ID being requested — authentication
+      ("are you logged in") is not the same check as authorization ("are
+      you allowed to see this specific record").</p>
+    `,
   },
   {
     id: "int-crypto-1",
@@ -57,6 +73,22 @@ export const intermediateChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
+    debrief: `
+      <p>Single-byte (or short repeating-key) XOR "encryption" shows up
+      constantly outside of CTFs — it's a favorite lightweight obfuscation
+      technique in malware, used to hide command-and-control traffic or
+      configuration data from casual inspection and simple signature
+      scanners.</p>
+      <p><strong>Impact:</strong> because the keyspace is tiny (256
+      possibilities for a single byte), it's trivially brute-forced —
+      exactly what you just did. Malware analysts use this same
+      brute-force-and-look-for-printable-text technique daily to unpack
+      obfuscated malware configs and strings.</p>
+      <p><strong>What prevents this:</strong> nothing stops an attacker
+      from using XOR obfuscation, but defenders should never mistake it
+      for encryption — layered encoding without real cryptographic
+      strength is a speed bump, not a lock.</p>
+    `,
   },
   {
     id: "int-forensics-1",
@@ -85,6 +117,23 @@ export const intermediateChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
+    debrief: `
+      <p>LSB steganography is a real data-exfiltration technique, not just
+      a puzzle trick. Because the pixel changes are visually
+      undetectable, threat actors have used image-based steganography to
+      smuggle stolen data past network content filters, or to hide
+      malicious configuration/payloads inside images that look completely
+      ordinary to both humans and most automated scanners.</p>
+      <p><strong>Impact:</strong> standard security tooling (antivirus,
+      content filters, DLP) that checks for known malicious signatures
+      generally can't detect steganographically-hidden data without
+      specialized stego-detection tools — "it's just a picture" is not a
+      safety guarantee in high-security environments.</p>
+      <p><strong>What prevents this:</strong> organizations handling
+      sensitive data at a serious threat level use dedicated
+      steganalysis tooling and treat unexplained image traffic (unusual
+      volume, unusual destinations) as worth inspecting.</p>
+    `,
   },
   {
     id: "int-osint-1",
@@ -117,5 +166,21 @@ export const intermediateChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
+    debrief: `
+      <p>Photos carrying embedded GPS metadata have caused real,
+      well-documented security and safety incidents: home locations
+      exposed via photo metadata, sensitive facility or personnel
+      locations revealed through geotagged photos, and stalking incidents
+      traced back to geotagged social media posts.</p>
+      <p><strong>Impact:</strong> a single unedited photo can reveal a
+      home address, a confidential office/site location, or a travel
+      pattern — turning something as innocuous as a vacation photo into a
+      physical security risk for a person or a company.</p>
+      <p><strong>What prevents this:</strong> stripping EXIF metadata
+      before publishing images publicly (most major social platforms do
+      this automatically now, but internal tools, personal accounts, and
+      press/marketing photos often don't); awareness training on checking
+      before posting is exactly this kind of exercise.</p>
+    `,
   },
 ];

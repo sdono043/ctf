@@ -3,6 +3,8 @@ import { checkFlag } from "../lib/flagcheck.js";
 import { getChallengeState, recordSolve, recordHintUsed } from "../lib/storage.js";
 import { pointsAfterHints } from "../lib/scoring.js";
 import { TIER_LABEL, CATEGORY_LABEL, qs, el } from "../lib/dom.js";
+import { getParticipant } from "../lib/participant.js";
+import { upsertSolve } from "../lib/firebase.js";
 
 import { mountCaesarTool } from "../tools/caesar-rot13.js";
 import { mountMultiDecoder } from "../tools/multi-decoder.js";
@@ -74,7 +76,23 @@ function render() {
   }
 
   root.append(renderHints(challenge, state));
-  root.append(renderFlagForm(challenge, state));
+
+  const debriefContainer = el("div", {});
+  root.append(renderFlagForm(challenge, state, debriefContainer));
+  root.append(debriefContainer);
+
+  if (state?.solved) showDebrief(debriefContainer, challenge);
+}
+
+function showDebrief(container, challenge) {
+  if (container.dataset.shown) return;
+  container.dataset.shown = "true";
+  container.append(
+    el("div", { class: "debrief-section" }, [
+      el("h2", {}, "Debrief: Why This Matters"),
+      el("div", { class: "debrief-body", html: challenge.debrief }),
+    ])
+  );
 }
 
 function mountTool(container, tool) {
@@ -135,7 +153,7 @@ function renderHints(challenge, state) {
   return section;
 }
 
-function renderFlagForm(challenge, state) {
+function renderFlagForm(challenge, state, debriefContainer) {
   const wrap = el("div", {});
 
   if (state?.solved) {
@@ -156,11 +174,14 @@ function renderFlagForm(challenge, state) {
         const hintsUsed = getChallengeState(challenge.id)?.hintsUsed || 0;
         const pointsEarned = pointsAfterHints(challenge, hintsUsed);
         recordSolve(challenge.id, { hintsUsed, pointsEarned });
+        const participant = getParticipant();
+        if (participant) upsertSolve(participant.id, challenge.id, hintsUsed);
         feedback.className = "flag-feedback correct";
         feedback.textContent = `Correct! +${pointsEarned} points.`;
         input.disabled = true;
         form.querySelector("button").disabled = true;
         wrap.append(el("div", { class: "stamp-success" }, "Access Granted"));
+        showDebrief(debriefContainer, challenge);
       } else {
         feedback.className = "flag-feedback incorrect";
         feedback.textContent = "Not quite — try again.";

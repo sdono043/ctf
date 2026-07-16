@@ -205,6 +205,19 @@ input[type="text"], input[type="password"] {
   font-family: var(--font-body);
 }
 
+.signin-root {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--paper-dim);
+}
+.signin-status a { color: var(--accent-amber); text-decoration: none; }
+.signin-form { display: inline-flex; gap: 0.4rem; align-items: center; }
+.signin-input {
+  font-family: var(--font-body); background: var(--ink-900); color: var(--paper);
+  border: 1px solid var(--ink-700); border-radius: 4px; padding: 0.3rem 0.55rem; width: 10rem;
+}
+.signin-btn { padding: 0.3rem 0.6rem; font-size: 0.78rem; }
+
 footer.site-footer {
   text-align: center; color: var(--paper-dim); font-size: 0.8rem;
   padding: 2rem 1rem 3rem; font-family: var(--font-mono);

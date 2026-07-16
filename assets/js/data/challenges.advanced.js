@@ -26,6 +26,21 @@ export const advancedChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
+    debrief: `
+      <p><code>alg:none</code> and signature-verification bypasses are not
+      hypothetical — they've appeared in real JWT libraries and products
+      that trusted the algorithm named inside the token itself instead of
+      enforcing it server-side. If the server asks "what algorithm did you
+      use?" and believes the answer, there's nothing to verify at all.</p>
+      <p><strong>Impact:</strong> this is a complete authentication
+      bypass — an attacker can forge a token claiming to be an
+      administrator, or any other user, with no password or key required.</p>
+      <p><strong>What prevents this:</strong> the server must hardcode
+      which algorithm(s) it accepts and never take that decision from the
+      token, always verify signatures using a fixed server-side secret or
+      key, and use a well-vetted JWT library rather than a hand-rolled
+      implementation.</p>
+    `,
   },
   {
     id: "adv-crypto-1",
@@ -61,6 +76,21 @@ export const advancedChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
+    debrief: `
+      <p>RSA's entire security rests on the modulus <strong>n</strong>
+      being infeasible to factor. This isn't just theoretical: real-world
+      studies (notably the 2012 "Mining Your Ps and Qs" research) found
+      thousands of weak or duplicate RSA keys in the wild on embedded
+      devices and routers, due to poor key generation and insufficient
+      entropy at boot time.</p>
+      <p><strong>Impact:</strong> an attacker who factors <strong>n</strong>
+      recovers the entire private key — every message ever encrypted with
+      that key can be decrypted, and every signature can be forged.</p>
+      <p><strong>What prevents this:</strong> using standard key sizes
+      (2048-bit minimum, 3072/4096-bit for longer-term protection),
+      generating keys with established, audited cryptographic libraries,
+      and never implementing RSA key generation by hand in a real system.</p>
+    `,
   },
   {
     id: "adv-forensics-1",
@@ -89,6 +119,22 @@ export const advancedChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
+    debrief: `
+      <p>This is a scaled-down version of exactly what SOC (Security
+      Operations Center) analysts do every day: sift enormous volumes of
+      routine log data to spot the one anomalous pattern. A burst of
+      failed logins from a single IP followed by an unusual value showing
+      up in a request field is a textbook credential-stuffing-then-probing
+      pattern.</p>
+      <p><strong>Impact:</strong> this is literally how real intrusions
+      get caught — or missed. Post-incident reviews of real breaches
+      frequently find the warning signs were sitting in logs the whole
+      time, just never surfaced or reviewed in time.</p>
+      <p><strong>What prevents this:</strong> centralized logging with
+      automated alerting (a SIEM) tuned to patterns like failed-login
+      bursts and anomalous field values, plus log retention long enough
+      to investigate after the fact.</p>
+    `,
   },
   {
     id: "adv-osint-1",
@@ -117,5 +163,24 @@ export const advancedChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
+    debrief: `
+      <p>Correlating small details across supposedly-separate accounts —
+      join dates, specific hobbies, writing style — is exactly how real
+      OSINT investigators (and attackers) de-anonymize people or build
+      targeting profiles. It's used both defensively, by researchers
+      tracking threat actors, and offensively, by attackers piecing
+      together an employee's professional and personal presence to craft
+      a convincing spear-phishing pitch.</p>
+      <p><strong>Impact:</strong> even accounts meant to stay separate or
+      anonymous can often be linked with enough small correlated details
+      — and attackers use exactly that link to make phishing attempts
+      feel personal and credible, which is what makes spear-phishing so
+      much more effective than generic phishing.</p>
+      <p><strong>What prevents this:</strong> awareness of how much
+      identifying detail (specific hobbies, join dates, writing patterns)
+      carries over when reusing accounts across professional and
+      personal/anonymous contexts — a core theme of spear-phishing
+      resistance training.</p>
+    `,
   },
 ];
