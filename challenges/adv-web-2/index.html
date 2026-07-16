@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Vendor Catalog Importer</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #f0f2f5; color: #1b1f24; padding: 2rem; }
+  .card { max-width: 560px; margin: 0 auto; background: white; border-radius: 8px; padding: 1.5rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  h2 { margin-top: 0; font-size: 1.15rem; }
+  .hint-text { color: #6b7280; font-size: .85rem; }
+  input { width: 100%; padding: .55rem .7rem; box-sizing: border-box; font-family: monospace; font-size: .85rem; border: 1px solid #d1d5db; border-radius: 4px; }
+  button { margin-top: .75rem; padding: .55rem 1.1rem; background: #2451a3; color: white; border: 0; border-radius: 4px; cursor: pointer; }
+  button:disabled { opacity: .6; cursor: default; }
+  pre { margin-top: 1rem; background: #0b0f14; color: #9fe8b8; padding: 1rem; border-radius: 6px; font-size: .8rem; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
+  .loading { color: #6b7280; font-style: italic; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h2>📦 Vendor Catalog Importer</h2>
+    <p class="hint-text">Paste a vendor-provided URL below and this internal tool will import their product catalog on your behalf.</p>
+    <input id="urlInput" type="text" placeholder="https://vendor-catalog.example.com/products.json" />
+    <div>
+      <button id="importBtn">Import</button>
+    </div>
+    <pre id="output" style="display:none;"></pre>
+  </div>
+
+  <script>
+    // This "importer" fetches whatever URL a vendor gives it, server-side,
+    // with no validation of where that URL points — a textbook SSRF bug.
+    // This training reproduction never makes a real network call at all:
+    // it looks up the URL against a small table of known values and
+    // returns a canned response, so there's nothing here that could ever
+    // reach a real third-party host.
+    const FLAG = "flag{m3t4d4t4_p1v0t_pwn3d_th3_cl0ud-527907ddaa}";
+
+    function isMetadataUrl(url) {
+      return url.includes("169.254.169.254") && url.includes("security-credentials");
+    }
+    function isDecoyUrl(url) {
+      return url.includes("vendor-catalog.example.com/products.json");
+    }
+
+    function lookup(rawUrl) {
+      const url = rawUrl.trim().toLowerCase();
+      if (isMetadataUrl(url)) {
+        return {
+          Code: "Success",
+          LastUpdated: new Date().toISOString(),
+          Type: "AWS-HMAC",
+          AccessKeyId: "AKIADEMOCTFPIVOT0001",
+          SecretAccessKey: `demo-only-not-a-real-key-${FLAG}`,
+          Token: "demo-session-token-not-real-do-not-use",
+          Expiration: new Date(Date.now() + 3600_000).toISOString(),
+        };
+      }
+      if (isDecoyUrl(url)) {
+        return {
+          products: [
+            { sku: "WIDGET-100", name: "Standard Widget", price: 19.99 },
+            { sku: "WIDGET-200", name: "Deluxe Widget", price: 39.99 },
+          ],
+        };
+      }
+      return { error: "ECONNREFUSED: could not reach host" };
+    }
+
+    const input = document.getElementById("urlInput");
+    const btn = document.getElementById("importBtn");
+    const output = document.getElementById("output");
+
+    btn.addEventListener("click", () => {
+      const url = input.value.trim();
+      if (!url) return;
+      btn.disabled = true;
+      output.style.display = "block";
+      output.className = "loading";
+      output.textContent = "Importing...";
+
+      setTimeout(() => {
+        const result = lookup(url);
+        output.className = "";
+        output.textContent = JSON.stringify(result, null, 2);
+        btn.disabled = false;
+      }, 500 + Math.random() * 300);
+    });
+  </script>
+</body>
+</html>

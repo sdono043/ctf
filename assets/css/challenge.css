@@ -2,6 +2,12 @@
   display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap;
   margin-bottom: 0.25rem;
 }
+.capstone-ribbon {
+  color: var(--ink-950);
+  background: linear-gradient(90deg, var(--accent-amber), var(--accent-teal));
+  border: none;
+  font-weight: 600;
+}
 .challenge-head h1 { margin: 0; font-size: 1.6rem; }
 .challenge-points { font-family: var(--font-mono); color: var(--accent-amber); }
 .challenge-summary { color: var(--paper-dim); margin-top: 0.25rem; }

@@ -211,4 +211,72 @@ export const advancedChallenges = [
       of them suggests alone.</p>
     `,
   },
+  {
+    id: "adv-web-2",
+    tier: "advanced",
+    category: "web",
+    title: "The Metadata Pivot",
+    points: 400,
+    capstone: true,
+    summary: "An internal tool imports data from any URL you give it. What else can it reach?",
+    prompt: `
+      <p>Below is an internal admin tool: it imports a vendor's product
+      catalog from any URL you paste in, fetching it on the server side and
+      showing you the result. Try the example vendor URL first — it works
+      exactly as advertised.</p>
+      <p>Cloud servers (AWS, and similar setups on other clouds) usually
+      have a special internal-only address the machine can ask "who am I,
+      and what am I allowed to do?" — it's how the server gets its own
+      temporary credentials without a human typing a password into it.
+      That address only makes sense to ask <em>from inside the server
+      itself</em> — a person browsing the internet can't reach it. But if a
+      feature on that server will fetch <em>any</em> URL you hand it, and
+      nothing checks where that URL points, the server can be tricked into
+      asking on your behalf and handing you the answer. This is a real,
+      named class of bug: <strong>Server-Side Request Forgery (SSRF)</strong>.</p>
+      <p>The address in question, on AWS, is always the same:
+      <code>169.254.169.254</code>.</p>
+    `,
+    embed: { type: "iframe", src: "challenges/adv-web-2/index.html", height: 340, sandbox: "allow-scripts allow-forms" },
+    hints: [
+      { text: "Try the example vendor URL first to see the importer behave normally.", cost: 30 },
+      { text: "Now try pointing it at the internal metadata address instead of a vendor URL: http://169.254.169.254/latest/meta-data/iam/security-credentials/", cost: 40 },
+      { text: "Read the returned JSON carefully — one of the credential fields isn't quite what it should be.", cost: 50 },
+    ],
+    flag: {
+      algorithm: "SHA-256",
+      hash: "ca5042831a123e98273f1f68d946dbc2cabc027cbb9e4dfa840e78ee9c526fa2",
+      normalize: { trim: true, lowercase: false },
+      formatHint: "flag{...}",
+    },
+    debrief: `
+      <p>This is the exact mechanism behind one of the largest breaches in
+      banking history. In 2019, Capital One suffered a breach exposing
+      more than 100 million customers' data. The root cause: a
+      misconfigured web application firewall let an attacker reach an
+      SSRF-vulnerable internal application, which was then tricked into
+      querying AWS's instance metadata service — and it handed over real,
+      valid temporary IAM credentials. Those credentials were used to read
+      and exfiltrate data from S3 storage buckets.</p>
+      <p><strong>Impact:</strong> an SSRF bug turned a single misconfigured
+      feature into a full cloud-account credential theft, and from there,
+      a mass data breach — no password phishing, no malware, just an
+      internal feature that trusted a URL it shouldn't have.</p>
+      <p><strong>What prevents this:</strong> validating and allow-listing
+      any URL a server-side feature is allowed to fetch; network-level
+      controls that block application servers from reaching the metadata
+      service unless they genuinely need to; and AWS's own response to
+      this exact incident — a new, harder-to-abuse metadata service
+      version (IMDSv2) that requires a special session token obtained via
+      a separate request, specifically designed to make this class of SSRF
+      pivot much harder to pull off.</p>
+      <p><strong>Real-world example:</strong> classified as
+      <a href="https://cwe.mitre.org/data/definitions/918.html" target="_blank" rel="noopener">CWE-918</a>
+      (Server-Side Request Forgery). The attacker, Paige Thompson, was
+      convicted on federal wire fraud and computer-intrusion charges; Capital
+      One paid an $80 million penalty to the Office of the Comptroller of
+      the Currency and settled related lawsuits for roughly $190 million on
+      top of that.</p>
+    `,
+  },
 ];

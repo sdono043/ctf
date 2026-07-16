@@ -31,6 +31,7 @@ function render() {
   root.append(
     el("div", { class: "challenge-head" }, [
       el("span", { class: `badge badge-${challenge.tier}` }, TIER_LABEL[challenge.tier]),
+      challenge.capstone ? el("span", { class: "badge capstone-ribbon" }, "★ Capstone") : null,
       el("h1", {}, challenge.title),
       el("span", { class: "challenge-points" }, `${challenge.points} pts`),
     ]),
