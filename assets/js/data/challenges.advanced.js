@@ -27,14 +27,23 @@ export const advancedChallenges = [
       formatHint: "flag{...}",
     },
     debrief: `
-      <p><code>alg:none</code> and signature-verification bypasses are not
-      hypothetical — they've appeared in real JWT libraries and products
-      that trusted the algorithm named inside the token itself instead of
-      enforcing it server-side. If the server asks "what algorithm did you
-      use?" and believes the answer, there's nothing to verify at all.</p>
-      <p><strong>Impact:</strong> this is a complete authentication
-      bypass — an attacker can forge a token claiming to be an
-      administrator, or any other user, with no password or key required.</p>
+      <p><strong>How this actually happens:</strong> a developer implements
+      JWT verification themselves, or uses a library whose older API made
+      it easy to get wrong, and writes code that trusts the algorithm
+      named inside the token instead of hardcoding what the server actually
+      expects. It's an understandable mistake — the token format
+      technically supports naming its own algorithm — but if the server
+      believes whatever the token claims about itself, there's nothing left
+      to verify.</p>
+      <p><strong>What an attacker actually does, and the tools they'd
+      use:</strong> exactly what you just did by hand — decode the payload,
+      change a claim, re-encode it. A dedicated tool called
+      <strong>jwt_tool</strong> automates this entire class of JWT attack
+      (alg:none, algorithm confusion, and others) against a live target,
+      and the debugger at <strong>jwt.io</strong> is the everyday tool
+      security researchers use to decode and inspect tokens manually. None
+      of this requires cracking any cryptography — the "attack" is just
+      reading and rewriting a token the server never actually checked.</p>
       <p><strong>What prevents this:</strong> the server must hardcode
       which algorithm(s) it accepts and never take that decision from the
       token, always verify signatures using a fixed server-side secret or
@@ -84,15 +93,24 @@ export const advancedChallenges = [
       formatHint: "flag{...}",
     },
     debrief: `
-      <p>RSA's entire security rests on the modulus <strong>n</strong>
-      being infeasible to factor. This isn't just theoretical: real-world
-      studies (notably the 2012 "Mining Your Ps and Qs" research) found
-      thousands of weak or duplicate RSA keys in the wild on embedded
-      devices and routers, due to poor key generation and insufficient
-      entropy at boot time.</p>
-      <p><strong>Impact:</strong> an attacker who factors <strong>n</strong>
-      recovers the entire private key — every message ever encrypted with
-      that key can be decrypted, and every signature can be forged.</p>
+      <p><strong>How this actually happens:</strong> RSA's entire security
+      rests on the modulus <strong>n</strong> being infeasible to factor —
+      which means it depends entirely on the two primes that generated it
+      being genuinely huge and genuinely random. That guarantee breaks
+      down in a few very real ways: someone rolls their own key generation
+      instead of using an audited library, a device generates keys right
+      at boot before it has gathered enough randomness (insufficient
+      entropy), or older export regulations forced weaker key sizes into
+      products by design. None of these are exotic mistakes — they've all
+      happened in shipped, real products.</p>
+      <p><strong>What an attacker actually does, and the tools they'd
+      use:</strong> exactly what you just did — factor <strong>n</strong>.
+      For small or weak moduli, the dedicated open-source tool is
+      <strong>RsaCtfTool</strong>, built specifically to try a whole
+      battery of known attacks against a weak RSA public key and recover
+      the private key automatically. For a modulus that's already been
+      factored by someone else, <strong>factordb.com</strong> is a public
+      lookup service researchers check before doing any work themselves.</p>
       <p><strong>What prevents this:</strong> using standard key sizes
       (2048-bit minimum, 3072/4096-bit for longer-term protection),
       generating keys with established, audited cryptographic libraries,
@@ -136,16 +154,25 @@ export const advancedChallenges = [
       formatHint: "flag{...}",
     },
     debrief: `
-      <p>This is a scaled-down version of exactly what SOC (Security
-      Operations Center) analysts do every day: sift enormous volumes of
-      routine log data to spot the one anomalous pattern. A burst of
-      failed logins from a single IP followed by an unusual value showing
-      up in a request field is a textbook credential-stuffing-then-probing
-      pattern.</p>
-      <p><strong>Impact:</strong> this is literally how real intrusions
-      get caught — or missed. Post-incident reviews of real breaches
-      frequently find the warning signs were sitting in logs the whole
-      time, just never surfaced or reviewed in time.</p>
+      <p><strong>How this actually unfolds:</strong> an attacker with a
+      list of leaked username/password combinations (from some unrelated
+      previous breach) runs them against a login page automatically —
+      that's the burst of failed logins. When one combination works, or
+      when they pivot to probing the app itself, that next request often
+      carries something unusual, exactly like the anomalous line you
+      found. This isn't a bug being introduced by mistake — it's an attack
+      actively unfolding in real time, which is why catching it depends
+      entirely on someone (or something) actually watching the logs.</p>
+      <p><strong>What an attacker actually does, and the tools they'd
+      use:</strong> automated credential-testing tools like
+      <strong>Hydra</strong> exist specifically to hammer a login form
+      with thousands of username/password pairs far faster than a human
+      could type them. On the defense side, this is exactly what SOC
+      (Security Operations Center) analysts do every day, using tools like
+      <strong>Splunk</strong> or the open-source <strong>ELK stack</strong>
+      (Elasticsearch, Logstash, Kibana) to search and alert on patterns
+      like this across millions of log lines — the same search-and-filter
+      motion you just did by hand, just automated and running continuously.</p>
       <p><strong>What prevents this:</strong> centralized logging with
       automated alerting (a SIEM) tuned to patterns like failed-login
       bursts and anomalous field values, plus log retention long enough
@@ -185,18 +212,23 @@ export const advancedChallenges = [
       formatHint: "flag{...}",
     },
     debrief: `
-      <p>Correlating small details across supposedly-separate accounts —
-      join dates, specific hobbies, writing style — is exactly how real
-      OSINT investigators (and attackers) de-anonymize people or build
-      targeting profiles. It's used both defensively, by researchers
-      tracking threat actors, and offensively, by attackers piecing
-      together an employee's professional and personal presence to craft
-      a convincing spear-phishing pitch.</p>
-      <p><strong>Impact:</strong> even accounts meant to stay separate or
-      anonymous can often be linked with enough small correlated details
-      — and attackers use exactly that link to make phishing attempts
-      feel personal and credible, which is what makes spear-phishing so
-      much more effective than generic phishing.</p>
+      <p><strong>How this actually unfolds:</strong> people reuse
+      identifying details — a specific hobby, a join date, a writing
+      style — across accounts they think of as separate (a professional
+      LinkedIn vs. an anonymous hobby forum, say) without realizing how
+      identifying the <em>combination</em> becomes, even when no single
+      detail is sensitive on its own.</p>
+      <p><strong>What an attacker actually does, and the tools they'd
+      use:</strong> for a specific username, <strong>Sherlock</strong> is
+      a well-known open-source tool that checks hundreds of social
+      platforms simultaneously to see where else that exact username
+      appears — turning what you just did manually (checking join dates
+      and bios one at a time) into a single automated sweep.
+      <strong>Maltego</strong> goes further, visually mapping the links
+      between accounts, emails, and other identifiers it discovers, which
+      is how an attacker builds a full profile of a target before crafting
+      a convincing spear-phishing pitch that references real, specific
+      details about that person's life.</p>
       <p><strong>What prevents this:</strong> awareness of how much
       identifying detail (specific hobbies, join dates, writing patterns)
       carries over when reusing accounts across professional and
@@ -250,18 +282,30 @@ export const advancedChallenges = [
       formatHint: "flag{...}",
     },
     debrief: `
-      <p>This is the exact mechanism behind one of the largest breaches in
-      banking history. In 2019, Capital One suffered a breach exposing
-      more than 100 million customers' data. The root cause: a
-      misconfigured web application firewall let an attacker reach an
-      SSRF-vulnerable internal application, which was then tricked into
-      querying AWS's instance metadata service — and it handed over real,
-      valid temporary IAM credentials. Those credentials were used to read
-      and exfiltrate data from S3 storage buckets.</p>
-      <p><strong>Impact:</strong> an SSRF bug turned a single misconfigured
-      feature into a full cloud-account credential theft, and from there,
-      a mass data breach — no password phishing, no malware, just an
-      internal feature that trusted a URL it shouldn't have.</p>
+      <p><strong>How this actually happens:</strong> a developer builds a
+      genuinely useful feature — import data from a URL, generate a
+      thumbnail from an image link, test a webhook — that fetches
+      whatever URL the user supplies, server-side. The bug isn't the
+      feature itself, it's the missing check on <em>where</em> that fetch
+      is allowed to go. Nobody sets out to let the internet reach their
+      cloud provider's internal-only address; it's simply the side effect
+      of an unvalidated "fetch this URL" feature running on a machine that
+      itself has access to that address.</p>
+      <p><strong>What an attacker actually does, and the tools they'd
+      use:</strong> exactly what you just did — try pointing the feature
+      at an internal-looking address instead of a normal one. For
+      confirming a suspected SSRF blind (when there's no visible response
+      to read), <strong>Burp Suite Collaborator</strong> is the standard
+      tool: it gives you a unique throwaway domain, and if the vulnerable
+      server reaches out to it, you know the SSRF is real even without
+      seeing the metadata response directly. <strong>SSRFmap</strong> is a
+      dedicated open-source tool for automating exploitation once an SSRF
+      is confirmed. In the real Capital One case, no special tooling was
+      even needed — a misconfigured web application firewall let the
+      attacker reach an SSRF-vulnerable internal application directly,
+      which was then tricked into querying AWS's instance metadata service
+      and handed over real, valid temporary IAM credentials, later used to
+      read and exfiltrate data from S3 storage buckets.</p>
       <p><strong>What prevents this:</strong> validating and allow-listing
       any URL a server-side feature is allowed to fetch; network-level
       controls that block application servers from reaching the metadata

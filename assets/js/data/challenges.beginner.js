@@ -28,25 +28,32 @@ export const beginnerChallenges = [
       formatHint: "flag{...}",
     },
     debrief: `
-      <p>Developers routinely leave debug comments, "temporary" notes, or
-      even hardcoded credentials in code that ships to production — and
-      anything sent to a browser is fully visible to anyone who looks,
-      comment or not. This is one of the most common real-world security
-      findings: leaked API keys and internal notes committed to public
-      repos or shipped in client-side bundles.</p>
-      <p><strong>Impact:</strong> attackers run automated scanners that
-      constantly search public sites and repositories for exactly this
-      pattern. A single forgotten comment has led to full account or
-      database compromises at real companies.</p>
+      <p><strong>How this actually happens:</strong> nobody decides to ship
+      credentials to production on purpose. A developer hardcodes a key or
+      leaves a "remove before launch" note while testing locally, it works,
+      and it ships — because comments and hidden values don't show up in a
+      visual review of the page, only in the actual source. This is
+      classified as
+      <a href="https://cwe.mitre.org/data/definitions/798.html" target="_blank" rel="noopener">CWE-798</a>
+      (Use of Hard-Coded Credentials).</p>
+      <p><strong>What an attacker actually does, and the tools they'd use:</strong>
+      for one page, View Source is enough — what you just did. At scale,
+      attackers (and security researchers) run automated secret-scanners
+      like <strong>TruffleHog</strong> or <strong>GitLeaks</strong> — built
+      to scan GitHub repos and JavaScript bundles for anything shaped like
+      an API key or password — across thousands of sites and repositories
+      at once, or simply pipe <code>curl</code> output through
+      <code>grep</code> hunting for common credential patterns. Once found,
+      a leaked key gets used directly to access whatever it unlocks — no
+      further "hacking" required.</p>
       <p><strong>What prevents this:</strong> automated secret-scanning in
       CI/CD pipelines, pre-commit hooks that block credential-shaped
-      strings, and code review before anything reaches production.</p>
-      <p><strong>Real-world example:</strong> classified as
-      <a href="https://cwe.mitre.org/data/definitions/798.html" target="_blank" rel="noopener">CWE-798</a>
-      (Use of Hard-Coded Credentials). Uber's 2016 breach of 57 million
-      riders' and drivers' records traced back to AWS credentials an
-      engineer had committed to a private GitHub repo — the exact pattern
-      you just found. <a href="https://nvd.nist.gov/vuln/detail/CVE-2017-14143" target="_blank" rel="noopener">CVE-2017-14143</a>
+      strings before they're ever committed, and code review before
+      anything reaches production.</p>
+      <p><strong>Real-world example:</strong> Uber's 2016 breach of 57
+      million riders' and drivers' records traced back to AWS credentials
+      an engineer had committed to a private GitHub repo — the exact
+      pattern you just found. <a href="https://nvd.nist.gov/vuln/detail/CVE-2017-14143" target="_blank" rel="noopener">CVE-2017-14143</a>
       is a similar case: a hardcoded secret cookie value baked into the
       Kaltura media server.</p>
     `,
@@ -80,16 +87,23 @@ export const beginnerChallenges = [
       formatHint: "flag{...}",
     },
     debrief: `
-      <p>Caesar/ROT ciphers aren't real security — they're a teaching tool.
-      The real lesson: <strong>obfuscation is not encryption.</strong>
-      Companies sometimes mistake simple substitution or encoding (ROT13,
-      Base64, XOR) for genuine protection of sensitive data, when it offers
-      essentially zero resistance to anyone who looks.</p>
-      <p><strong>Impact:</strong> data "protected" this way is broken in
-      seconds — often faster than it took to encode it in the first place.
-      Relying on it for anything sensitive (passwords, tokens, PII) gives a
-      false sense of security that's arguably worse than no protection at
-      all, since it invites complacency.</p>
+      <p><strong>How this actually happens:</strong> someone needs to
+      "obscure" data quickly — a config value, a URL parameter, a note —
+      and reaches for a simple substitution or encoding scheme because
+      it's fast and looks scrambled, without realizing it adds no real
+      security at all. The mistake is treating <em>obfuscation</em> (make
+      it look unreadable) as if it were <em>encryption</em> (make it
+      mathematically infeasible to read without a key).</p>
+      <p><strong>What an attacker actually does, and the tools they'd
+      use:</strong> the standard tool for this across the security
+      community is <strong>CyberChef</strong> (built by GCHQ, genuinely
+      nicknamed "the Cyber Swiss Army Knife") — a free web tool that tries
+      every common cipher, shift, and encoding against a piece of text with
+      a few clicks, exactly like the shift tool on this page. For a
+      well-known cipher like this one, an attacker doesn't even need to
+      think about it: they paste the text in, watch all 26 rotations at
+      once, and read off whichever one makes sense — often in under ten
+      seconds.</p>
       <p><strong>What prevents this:</strong> use vetted, modern
       cryptography (AES, etc.) for anything that actually needs
       confidentiality, and never treat encoding schemes as encryption.</p>
@@ -129,17 +143,22 @@ export const beginnerChallenges = [
       formatHint: "flag{...}",
     },
     debrief: `
-      <p>File formats have well-defined structures, but many parsers and
-      viewers stop reading at the "logical end" without checking whether
-      anything follows. That gap gets used both defensively (watermarking,
-      steganography) and offensively — malware and exfiltrated data have
-      been smuggled inside otherwise-legitimate image files as trailing
-      bytes past the declared end, sometimes called a "polyglot file".</p>
-      <p><strong>Impact:</strong> security tools that only render or
-      preview a file — rather than fully parsing and validating it — can
-      completely miss payloads or exfiltrated data hidden this way,
-      including in systems meant to block exactly that (DLP/upload
-      scanners).</p>
+      <p><strong>How this actually happens:</strong> file formats have
+      well-defined structures, but many parsers and viewers stop reading at
+      the "logical end" without checking whether anything follows — so
+      appending extra data after that point is trivial and often invisible
+      to normal use. That gap gets used both defensively (watermarking) and
+      offensively — deliberately smuggling a payload inside an
+      otherwise-legitimate file, past filters that only inspect what the
+      file renders as. This kind of file is called a "polyglot".</p>
+      <p><strong>What an attacker actually does, and the tools they'd
+      use:</strong> exactly what you just did — pull the file into a hex
+      viewer and scroll to the end, or run it through <strong>binwalk</strong>,
+      a widely-used open-source tool built specifically to scan a file for
+      embedded or appended content and automatically extract it. On a
+      Mac/Linux machine, even basic commands like <code>file</code> and
+      <code>strings</code> are often enough to notice a file is carrying
+      more than it should.</p>
       <p><strong>What prevents this:</strong> file validation that parses
       to the exact expected end and flags trailing data, and content
       scanners that hash/inspect entire files rather than just what
@@ -184,24 +203,40 @@ export const beginnerChallenges = [
       formatHint: "flag{...}",
     },
     debrief: `
-      <p>This mirrors real OSINT reconnaissance: people (and companies)
-      sometimes leave sensitive information in metadata, alt-text, or
-      visually-hidden page elements they assume nobody actually reads —
-      and researchers, and attackers, rely on exactly that assumption.
-      It's also a preview of social-engineering recon: attackers who
-      target a specific person or company genuinely read everything
-      public, not just skim it, to build a profile for phishing.</p>
-      <p><strong>Impact:</strong> oversharing "harmless" details, or
-      developers leaving hidden debug/config data on public pages, both
-      hand attackers free reconnaissance material they'd otherwise have to
-      work for.</p>
-      <p><strong>What prevents this:</strong> security-awareness training
-      like this one, and periodic audits of public-facing pages and
-      profiles for accidental data leakage.</p>
-      <p><strong>Real-world note:</strong> this is exactly the recon phase
-      real attackers do before a targeted phishing attempt — quietly
-      reading everything public about a target, including the parts
-      nobody expects to be read.</p>
+      <p><strong>How this actually happens:</strong> nobody sits down and
+      says "let's hide sensitive data in the page." It happens by
+      accident — a developer adds a hidden field for legitimate reasons
+      (screen-reader accessibility text, an A/B test variant, a QA note)
+      and puts real information in it instead of a placeholder, then
+      forgets to remove it before the page goes live. It ships because
+      nobody checks page source before publishing — only how the page
+      <em>looks</em>.</p>
+      <p><strong>What an attacker actually does, and the tools they'd
+      use:</strong> before a targeted phishing email or pretext phone call,
+      attackers do reconnaissance — this is standard practice, not a
+      Hollywood scenario. For one page, that's just View Source or
+      DevTools, same as you did. At scale across a whole company, they
+      don't browse manually — they run simple scripts
+      (<code>curl</code>/<code>wget</code> piped into <code>grep</code>,
+      or a quick Python scraper) to pull down hundreds of pages at once and
+      search for anything that looks like a hidden field, an internal
+      note, or a leftover credential. Two other tools show up constantly in
+      real recon: the <strong>Wayback Machine</strong> (archive.org), which
+      checks old cached snapshots of a page since a leak that's since been
+      "fixed" on the live site often still exists in an archived version;
+      and <strong>search-engine dorking</strong> — targeted search
+      operators (e.g. <code>site:company.com "internal"</code>) that
+      surface pages already indexed with sensitive-looking text, no visit
+      required. For a broader campaign, attackers often point an OSINT
+      aggregation tool — <strong>theHarvester</strong>,
+      <strong>Maltego</strong>, or <strong>SpiderFoot</strong> are the
+      well-known ones — at a company domain or employee name to
+      automatically pull together everything public at once.</p>
+      <p><strong>What prevents this:</strong> treat "hidden from view" as
+      public, not private — anything in a page's source should be assumed
+      readable by anyone, with any tool, at any point in the future
+      (archives don't forget). Review what's actually in the HTML before
+      publishing, not just how it renders.</p>
     `,
   },
 ];

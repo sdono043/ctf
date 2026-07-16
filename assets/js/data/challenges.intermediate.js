@@ -30,15 +30,23 @@ export const intermediateChallenges = [
       formatHint: "flag{...}",
     },
     debrief: `
-      <p>Insecure Direct Object Reference (IDOR) is consistently one of the
-      most common vulnerabilities found in real web and mobile apps —
-      "Broken Object Level Authorization" tops OWASP's API Security Top
-      10. Real breaches at major companies have come from exactly this
-      pattern: changing a numeric ID in a URL or API call exposed other
-      users' private data.</p>
-      <p><strong>Impact:</strong> because IDs are often sequential or
-      easily guessable, a single flaw like this can be scripted into mass
-      scraping of every customer's private records, not just one.</p>
+      <p><strong>How this actually happens:</strong> a developer builds an
+      endpoint that looks up a record by ID — simple, fast, easy to debug —
+      and either assumes "you'd have to guess the ID" is protection enough,
+      or adds a login check but forgets that being logged in isn't the same
+      as being <em>allowed to see this specific record</em>. The UI only
+      links to IDs the user should see, so it looks safe — but the server
+      itself never actually checks who's asking.</p>
+      <p><strong>What an attacker actually does, and the tools they'd
+      use:</strong> the standard tool here is <strong>Burp Suite</strong>
+      (or its free alternative, <strong>OWASP ZAP</strong>) — a proxy that
+      intercepts every request a web app makes, so an attacker can take one
+      legitimate request and resend it hundreds of times with different ID
+      values automatically (Burp's "Intruder" feature is built exactly for
+      this). Command-line fuzzers like <strong>ffuf</strong> do the same
+      job from a terminal. Point either at an ID parameter, let it run
+      through a range of numbers, and see which ones return someone else's
+      data.</p>
       <p><strong>What prevents this:</strong> the server must verify, on
       every request, that the authenticated user is specifically
       authorized for the object ID being requested — authentication
@@ -83,16 +91,22 @@ export const intermediateChallenges = [
       formatHint: "flag{...}",
     },
     debrief: `
-      <p>Single-byte (or short repeating-key) XOR "encryption" shows up
-      constantly outside of CTFs — it's a favorite lightweight obfuscation
-      technique in malware, used to hide command-and-control traffic or
-      configuration data from casual inspection and simple signature
-      scanners.</p>
-      <p><strong>Impact:</strong> because the keyspace is tiny (256
-      possibilities for a single byte), it's trivially brute-forced —
-      exactly what you just did. Malware analysts use this same
-      brute-force-and-look-for-printable-text technique daily to unpack
-      obfuscated malware configs and strings.</p>
+      <p><strong>How this actually happens:</strong> a developer, or a
+      malware author, wants to hide data from casual inspection without
+      the overhead of real cryptography, and single-byte XOR is the
+      easiest thing to reach for — a few lines of code, and the output no
+      longer looks like plain text. The mistake is assuming "no longer
+      readable at a glance" means "secure," when the keyspace is only 256
+      possible values.</p>
+      <p><strong>What an attacker actually does, and the tools they'd
+      use:</strong> exactly what you just did — brute-force all 256 keys
+      and look for which one turns into readable text or, as here, valid
+      Base64. <strong>CyberChef</strong> has a "XOR Brute Force" recipe
+      built in for exactly this. Malware analysts use a purpose-built tool
+      called <strong>FLOSS</strong> (FLARE Obfuscated String Solver, from
+      Mandiant/Google) to automatically extract and decode obfuscated
+      strings — including XOR-encoded ones — straight out of a malware
+      sample, without a human trying keys by hand at all.</p>
       <p><strong>What prevents this:</strong> nothing stops an attacker
       from using XOR obfuscation, but defenders should never mistake it
       for encryption — layered encoding without real cryptographic
@@ -134,17 +148,24 @@ export const intermediateChallenges = [
       formatHint: "flag{...}",
     },
     debrief: `
-      <p>LSB steganography is a real data-exfiltration technique, not just
-      a puzzle trick. Because the pixel changes are visually
-      undetectable, threat actors have used image-based steganography to
-      smuggle stolen data past network content filters, or to hide
-      malicious configuration/payloads inside images that look completely
-      ordinary to both humans and most automated scanners.</p>
-      <p><strong>Impact:</strong> standard security tooling (antivirus,
-      content filters, DLP) that checks for known malicious signatures
-      generally can't detect steganographically-hidden data without
-      specialized stego-detection tools — "it's just a picture" is not a
-      safety guarantee in high-security environments.</p>
+      <p><strong>How this actually happens:</strong> unlike most of the
+      other bugs in this course, this one is rarely an accident — LSB
+      steganography is a deliberate technique. It's legitimate when used
+      for watermarking or proving image ownership, and malicious when used
+      to smuggle stolen data out of a network, or hide malware
+      configuration inside a file that looks completely ordinary to a
+      human and to most automated scanners, since the pixel changes are
+      visually undetectable.</p>
+      <p><strong>What an attacker actually does, and the tools they'd
+      use:</strong> to hide data, tools like <strong>steghide</strong> or
+      <strong>OpenStego</strong> automate exactly what our LSB tool does in
+      reverse. To detect it — which is what you just did — the standard
+      open-source tool is <strong>zsteg</strong>, built specifically to
+      find hidden data in PNG and BMP files by checking exactly the kind
+      of bit-plane patterns you just extracted by hand;
+      <strong>binwalk</strong> is the more general-purpose version, useful
+      for spotting embedded/appended content of any kind, not just LSB
+      stego.</p>
       <p><strong>What prevents this:</strong> organizations handling
       sensitive data at a serious threat level use dedicated
       steganalysis tooling and treat unexplained image traffic (unusual
@@ -189,15 +210,21 @@ export const intermediateChallenges = [
       formatHint: "flag{...}",
     },
     debrief: `
-      <p>Photos carrying embedded GPS metadata have caused real,
-      well-documented security and safety incidents: home locations
-      exposed via photo metadata, sensitive facility or personnel
-      locations revealed through geotagged photos, and stalking incidents
-      traced back to geotagged social media posts.</p>
-      <p><strong>Impact:</strong> a single unedited photo can reveal a
-      home address, a confidential office/site location, or a travel
-      pattern — turning something as innocuous as a vacation photo into a
-      physical security risk for a person or a company.</p>
+      <p><strong>How this actually happens:</strong> phones and cameras
+      embed GPS coordinates into a photo's metadata automatically whenever
+      location services are on — most people's habit is to just take the
+      photo and share it, with no separate step where they'd notice or
+      remove that data. Unlike a caption, EXIF metadata isn't visible in
+      the photo itself, so nothing about looking at the image tips anyone
+      off that a precise location is riding along inside the file.</p>
+      <p><strong>What an attacker actually does, and the tools they'd
+      use:</strong> the standard tool is <strong>ExifTool</strong>, a free
+      command-line utility that reads (and writes) metadata from
+      practically any image or document format — one command against a
+      downloaded photo prints every embedded GPS coordinate, camera model,
+      and timestamp. There's no cleverness required beyond downloading the
+      photo and running the tool; the same read our in-page EXIF tool just
+      did for you.</p>
       <p><strong>What prevents this:</strong> stripping EXIF metadata
       before publishing images publicly (most major social platforms do
       this automatically now, but internal tools, personal accounts, and
