@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CTF 101 — Field Ops: CTF</title>
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <style>
+    .briefing { max-width: 720px; }
+    .briefing h2 { margin-top: 2.2rem; font-size: 1.3rem; }
+    .briefing ul { padding-left: 1.2rem; }
+    .briefing li { margin-bottom: 0.5rem; }
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1rem; margin-top: 1rem; }
+    .tool-grid .card h3 { font-size: 0.95rem; }
+    .tool-grid .card p { font-size: 0.85rem; }
+    kbd { background: var(--ink-800); border: 1px solid var(--ink-600); border-radius: 3px; padding: 0.05rem 0.4rem; font-family: var(--font-mono); font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">FIELD OPS: CTF</a>
+    <nav class="site-nav">
+      <a href="index.html">Home</a>
+      <a href="ctf101.html" class="active">CTF 101</a>
+      <a href="dashboard.html">Dashboard</a>
+    </nav>
+  </header>
+  <main>
+    <span class="badge badge-beginner">Recruit Briefing</span>
+    <h1>CTF 101</h1>
+    <div class="briefing">
+      <p>
+        A <strong>Capture-The-Flag (CTF)</strong> is a puzzle where the "prize"
+        for solving something is a specific piece of text called a
+        <strong>flag</strong>, usually formatted like
+        <code>flag{some_text_here}</code>. Your job is to find it, however the
+        challenge requires — reading page source, decoding a cipher, digging
+        through a file, or piecing together clues.
+      </p>
+      <p>
+        There's no single "right" background for this. Some challenges reward
+        curiosity more than expertise: reading carefully, trying the obvious
+        thing first, and not being afraid to poke at something until it
+        breaks.
+      </p>
+
+      <h2>How this site works</h2>
+      <ul>
+        <li>Challenges are grouped into three tracks: <strong>Recruit</strong> (beginner), <strong>Field Agent</strong> (intermediate), and <strong>Classified</strong> (advanced) — pick any track from the home page.</li>
+        <li>Each challenge has a prompt, sometimes an embedded page or downloadable file, and a box at the bottom where you submit the flag.</li>
+        <li>Hints are staged: the next hint only appears after you've opened the one before it. In the Recruit track, hints are always free. In later tracks, revealing a hint costs points.</li>
+        <li>Your progress and score are saved in this browser only (no account needed) — check the <a href="dashboard.html">Dashboard</a> any time.</li>
+      </ul>
+
+      <h2>Tools you'll want</h2>
+      <p>Most challenges are solvable with your browser alone:</p>
+      <div class="tool-grid">
+        <div class="card">
+          <h3>Browser DevTools</h3>
+          <p>Right-click any page → "Inspect" or "View Page Source", or press <kbd>F12</kbd>. This is how you read a page's actual HTML/JS/CSS — not just what's rendered on screen.</p>
+        </div>
+        <div class="card">
+          <h3>Built-in decoders</h3>
+          <p>Several challenges include an in-page tool for Base64, hex, XOR, cipher-shifting, and more — no extension installs required.</p>
+        </div>
+        <div class="card">
+          <h3>A notepad</h3>
+          <p>Jot down partial decodes, coordinates, or usernames as you go — multi-step challenges often need you to combine several small findings.</p>
+        </div>
+      </div>
+
+      <h2>A few tips</h2>
+      <ul>
+        <li>Read the whole prompt before touching any tool — it usually tells you exactly what to look for.</li>
+        <li>"Hidden" doesn't always mean encrypted — sometimes it just means not visible on screen (an HTML comment, an invisible element, text after a file's official end).</li>
+        <li>Stuck for a while? Open the next hint — in the Recruit track it costs nothing.</li>
+        <li>Flags always look like <code>flag{...}</code> — if your decoded text doesn't look like that yet, you're probably one step away, not on the wrong track.</li>
+      </ul>
+
+      <p><a class="btn" href="tracks/beginner.html">Start the Recruit track →</a></p>
+    </div>
+  </main>
+  <footer class="site-footer">Progress is stored locally in this browser only.</footer>
+</body>
+</html>

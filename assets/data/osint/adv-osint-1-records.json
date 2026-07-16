@@ -1,0 +1,42 @@
+{
+  "description": "Two leaked datasets from unrelated platforms. One person maintains an account on both — find the matching pair by cross-referencing join date, timezone, and bio details, then read that SnapFeed account's post history.",
+  "gitbucket_accounts": [
+    { "username": "devMara22", "joined": "2021-03", "timezone": "UTC-5", "bio": "full-stack tinkerer, training for my first marathon this spring" },
+    { "username": "kcode_dan", "joined": "2019-11", "timezone": "UTC+0", "bio": "backend engineer, dad of two, weekends spent fostering greyhounds" },
+    { "username": "pixel_queen", "joined": "2022-07", "timezone": "UTC-8", "bio": "frontend + generative art, currently at 34 succulents and counting" },
+    { "username": "n0rthstar_eng", "joined": "2020-05", "timezone": "UTC-6", "bio": "SRE, amateur astronomer, building a home observatory" }
+  ],
+  "snapfeed_accounts": [
+    {
+      "handle": "marathon_mara",
+      "joined": "2021-03",
+      "timezone": "UTC-5",
+      "bio": "3 weeks out from marathon #1! full-stack by day 🏃",
+      "posts": ["race day countdown!", "long run Sunday, 18 miles done"]
+    },
+    {
+      "handle": "dan_and_hounds",
+      "joined": "2019-11",
+      "timezone": "UTC+0",
+      "bio": "greyhound foster dad 🐕 backend brain by day",
+      "posts": [
+        "fostered our 6th greyhound this year, meet Biscuit",
+        "found this in an old CTF writeup, saving it here so I don't lose it: flag{c0rr3l4t3_th3_r3c0rds-6444731b78}"
+      ]
+    },
+    {
+      "handle": "succulent_sable",
+      "joined": "2022-08",
+      "timezone": "UTC-8",
+      "bio": "plant mom, way too many succulents",
+      "posts": ["repotting day!", "lost one to overwatering, RIP little guy"]
+    },
+    {
+      "handle": "stargazer_north",
+      "joined": "2020-06",
+      "timezone": "UTC-6",
+      "bio": "backyard observatory in progress 🔭",
+      "posts": ["first light through the new scope tonight", "Saturn's rings are so clear tonight"]
+    }
+  ]
+}

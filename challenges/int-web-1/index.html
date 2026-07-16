@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Directory - Employee Profiles</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #f6f7f9; color: #1b1f24; padding: 2rem; }
+  .card { max-width: 480px; margin: 1rem auto; background: white; border-radius: 8px; padding: 1.5rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  nav { max-width: 480px; margin: 0 auto 1rem; }
+  nav a { margin-right: 1rem; }
+  .role-badge { display: inline-block; padding: .15rem .5rem; border-radius: 3px; font-size: .75rem; }
+  .role-employee { background: #dbeafe; color: #1e40af; }
+  .role-admin { background: #fee2e2; color: #991b1b; }
+</style>
+</head>
+<body>
+  <nav>
+    <strong>Employee Directory</strong> —
+    <a href="?user=1">Profile 1</a>
+    <a href="?user=2">Profile 2</a>
+  </nav>
+  <div id="profile" class="card"></div>
+
+  <script>
+    // Internal directory lookup. IDs are assigned sequentially except for
+    // service/admin accounts, which intentionally use non-sequential IDs
+    // so they don't show up in casual browsing of the directory.
+    const USERS = {
+      1: { name: "Jordan Ellis", title: "Support Associate", role: "employee" },
+      2: { name: "Priya Nair", title: "Account Manager", role: "employee" },
+      1337: { name: "root-admin", title: "System Administrator", role: "admin",
+              flag: "flag{1nsecur3_d1r3ct_0bj3ct_r3f-2db41cca19}" },
+    };
+
+    const params = new URLSearchParams(location.search);
+    const id = params.get("user") || "1";
+    const user = USERS[id];
+    const el = document.getElementById("profile");
+
+    if (!user) {
+      el.innerHTML = `<p>No profile found for user id "${id}".</p>`;
+    } else {
+      el.innerHTML = `
+        <h2>${user.name}</h2>
+        <p>${user.title}</p>
+        <span class="role-badge role-${user.role}">${user.role}</span>
+        ${user.flag ? `<p style="margin-top:1rem;"><strong>Admin note:</strong> ${user.flag}</p>` : ""}
+      `;
+    }
+  </script>
+</body>
+</html>

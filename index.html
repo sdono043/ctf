@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Field Ops: CTF</title>
+  <meta name="description" content="A capture-the-flag learning platform with beginner, intermediate, and advanced tracks." />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <style>
+    .hero { padding: 1.5rem 0 1rem; }
+    .hero h1 { font-size: 2.1rem; margin-bottom: 0.4rem; }
+    .hero p { color: var(--paper-dim); max-width: 640px; }
+    .hero-actions { margin-top: 1.25rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">FIELD OPS: CTF</a>
+    <nav class="site-nav">
+      <a href="index.html" class="active">Home</a>
+      <a href="ctf101.html">CTF 101</a>
+      <a href="dashboard.html">Dashboard</a>
+    </nav>
+  </header>
+  <main>
+    <section class="hero">
+      <h1>Capture the Flag, from first steps to real technique.</h1>
+      <p>
+        Twelve hands-on challenges across web exploitation, cryptography,
+        forensics, and OSINT — split into three tracks so you can start
+        wherever you are and level up at your own pace. Everything runs
+        entirely in your browser: no signup, no server, no account.
+      </p>
+      <div class="hero-actions">
+        <a class="btn" href="ctf101.html">New here? Start with CTF 101 →</a>
+        <a class="btn" href="dashboard.html">View your progress →</a>
+      </div>
+    </section>
+
+    <div id="tier-root"></div>
+  </main>
+  <footer class="site-footer">Progress is stored locally in this browser only — it won't follow you to another device.</footer>
+  <script type="module" src="assets/js/pages/home.js"></script>
+</body>
+</html>

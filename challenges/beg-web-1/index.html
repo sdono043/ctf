@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>SecureVault Login</title>
+<style>
+  body { font-family: Georgia, serif; background: #eef1f5; color: #1b1f24; padding: 2rem; }
+  .card { max-width: 360px; margin: 2rem auto; background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,.1); }
+  h1 { font-size: 1.25rem; margin-top: 0; }
+  input { width: 100%; padding: .5rem; margin-bottom: .75rem; box-sizing: border-box; }
+  button { width: 100%; padding: .6rem; background: #2451a3; color: white; border: 0; border-radius: 4px; cursor: pointer; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>🔒 SecureVault</h1>
+    <form onsubmit="return false;">
+      <label>Username</label>
+      <input type="text" placeholder="you@example.com" />
+      <label>Password</label>
+      <input type="password" placeholder="••••••••" />
+      <button type="submit">Sign in</button>
+    </form>
+    <!--
+      TODO(dev): remove this before shipping to prod!!
+      staging flag for QA: flag{v13w_s0urc3_y0ung_padawan-cf2b1905e0}
+    -->
+    <p style="font-size:.8rem;color:#888;">Trouble signing in? Contact IT support.</p>
+  </div>
+</body>
+</html>

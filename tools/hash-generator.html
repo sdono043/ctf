@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Flag Hash Generator — Authoring Tool</title>
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <style>
+    body { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    textarea, input[type=text] { width: 100%; font-family: var(--font-mono); font-size: 1rem; }
+    .field { margin-bottom: 1.25rem; }
+    .output { background: var(--ink-800); border: 1px dashed var(--accent-amber); padding: 1rem; border-radius: 4px; word-break: break-all; }
+    .output code { display: block; margin-bottom: .5rem; }
+    label { display: block; font-family: var(--font-mono); font-size: .8rem; letter-spacing: .05em; text-transform: uppercase; color: var(--accent-teal); margin-bottom: .35rem; }
+  </style>
+</head>
+<body>
+  <p><a href="../index.html">&larr; Back to site</a></p>
+  <h1>Flag Hash Generator</h1>
+  <p class="dossier-note">
+    <strong>Authoring tool — not linked from site navigation.</strong>
+    Use this to mint new challenge flags. Every flag needs a random suffix for
+    entropy: an unsalted SHA-256 hash ships in <code>assets/js/data/*.js</code> in
+    plain sight, so a guessable flag like <code>flag{password}</code> is
+    crackable offline in microseconds. The random suffix is what makes that
+    infeasible — it can only be read off the <em>solved</em> artifact
+    (the stego image, the decoded ciphertext, the sandboxed page's DOM, etc.),
+    never guessed from a dictionary.
+  </p>
+
+  <div class="field">
+    <label for="prefix">Readable flag prefix</label>
+    <input id="prefix" type="text" placeholder="h1dd3n_1n_pla1n_s1ght" />
+  </div>
+
+  <div class="field">
+    <button id="generate">Generate flag + hash</button>
+  </div>
+
+  <div class="field">
+    <label for="normalize-trim">Normalization</label>
+    <label><input type="checkbox" id="norm-trim" checked /> trim whitespace</label>
+    <label><input type="checkbox" id="norm-lower" /> lowercase (recommended for beginner tier)</label>
+  </div>
+
+  <div class="output" id="output" hidden>
+    <label>Full flag (embed this in the challenge artifact — image, log file, page source, dataset, etc.)</label>
+    <code id="out-flag"></code>
+    <label>SHA-256 hash (paste into the challenge's <code>flag.hash</code> field)</label>
+    <code id="out-hash"></code>
+    <label>Schema snippet</label>
+    <code id="out-snippet" style="white-space: pre-wrap;"></code>
+  </div>
+
+  <script type="module">
+    import { sha256Hex, normalizeFlag } from "../assets/js/lib/flagcheck.js";
+
+    function randomSuffix() {
+      const bytes = crypto.getRandomValues(new Uint8Array(5)); // 40 bits of entropy, 10 hex chars
+      return Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    document.getElementById("generate").addEventListener("click", async () => {
+      const prefix = document.getElementById("prefix").value.trim() || "flag";
+      const trim = document.getElementById("norm-trim").checked;
+      const lowercase = document.getElementById("norm-lower").checked;
+      const flag = `flag{${prefix}-${randomSuffix()}}`;
+      const normalized = normalizeFlag(flag, { trim, lowercase });
+      const hash = await sha256Hex(normalized);
+
+      document.getElementById("out-flag").textContent = flag;
+      document.getElementById("out-hash").textContent = hash;
+      document.getElementById("out-snippet").textContent =
+`flag: {
+  algorithm: "SHA-256",
+  hash: "${hash}",
+  normalize: { trim: ${trim}, lowercase: ${lowercase} },
+  formatHint: "flag{...}"
+}`;
+      document.getElementById("output").hidden = false;
+    });
+  </script>
+</body>
+</html>

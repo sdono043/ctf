@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Session Panel</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #10151c; color: #e6edf3; padding: 2rem; }
+  .card { max-width: 520px; margin: 0 auto; background: #161d27; border: 1px solid #263041; border-radius: 8px; padding: 1.5rem 2rem; }
+  textarea { width: 100%; font-family: monospace; font-size: .8rem; background: #0b0f14; color: #9fe8b8; border: 1px solid #263041; padding: .6rem; box-sizing: border-box; }
+  button { padding: .5rem 1rem; background: #2b8a5e; color: white; border: 0; border-radius: 4px; cursor: pointer; margin-top: .75rem; }
+  code { background: #0b0f14; padding: .1rem .3rem; border-radius: 3px; }
+  .status { margin-top: 1rem; padding: .75rem; border-radius: 4px; }
+  .status.guest { background: #3a2f10; color: #f2c85b; }
+  .status.admin { background: #123b23; color: #7ee2a8; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h2>Session Panel</h2>
+    <p>Your current session token (a compact <code>header.payload.signature</code> token):</p>
+    <textarea id="tokenBox" rows="3"></textarea>
+    <button id="loadBtn">Load session</button>
+    <div id="status" class="status guest">Checking session...</div>
+  </div>
+
+  <script>
+    function b64urlEncode(str) {
+      return btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    }
+    function b64urlDecode(str) {
+      const padded = str.replace(/-/g, "+").replace(/_/g, "/").padEnd(str.length + (4 - (str.length % 4 || 4)) % 4, "=");
+      return atob(padded);
+    }
+
+    function makeToken(payload) {
+      const header = { alg: "none", typ: "JWT" };
+      return `${b64urlEncode(JSON.stringify(header))}.${b64urlEncode(JSON.stringify(payload))}.`;
+    }
+
+    // This "server" never verifies a signature — alg:none is trusted blindly.
+    // That is the vulnerability: whatever claims are in the payload are
+    // accepted as-is once base64url-decoded.
+    function checkSession(token) {
+      const parts = token.split(".");
+      if (parts.length < 2) return { ok: false };
+      try {
+        const payload = JSON.parse(b64urlDecode(parts[1]));
+        return { ok: true, payload };
+      } catch {
+        return { ok: false };
+      }
+    }
+
+    const tokenBox = document.getElementById("tokenBox");
+    const statusEl = document.getElementById("status");
+    let currentToken = makeToken({ role: "guest" });
+    tokenBox.value = currentToken;
+
+    function render() {
+      const result = checkSession(currentToken);
+      if (result.ok && result.payload.role === "admin") {
+        statusEl.className = "status admin";
+        statusEl.innerHTML = "Access level: <strong>admin</strong><br>flag{alg_n0n3_tru5t_n0_0n3-0498fd583d}";
+      } else if (result.ok) {
+        statusEl.className = "status guest";
+        statusEl.textContent = `Access level: ${result.payload.role || "unknown"}`;
+      } else {
+        statusEl.className = "status guest";
+        statusEl.textContent = "Invalid or unreadable session token.";
+      }
+    }
+
+    document.getElementById("loadBtn").addEventListener("click", () => {
+      currentToken = tokenBox.value.trim();
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
