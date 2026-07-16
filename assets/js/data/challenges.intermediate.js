@@ -44,6 +44,15 @@ export const intermediateChallenges = [
       authorized for the object ID being requested — authentication
       ("are you logged in") is not the same check as authorization ("are
       you allowed to see this specific record").</p>
+      <p><strong>Real-world example:</strong> tracked as
+      <a href="https://cwe.mitre.org/data/definitions/639.html" target="_blank" rel="noopener">CWE-639</a>
+      and #1 on the <a href="https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/" target="_blank" rel="noopener">OWASP API Security Top 10</a>
+      (Broken Object Level Authorization).
+      <a href="https://nvd.nist.gov/vuln/detail/CVE-2023-4836" target="_blank" rel="noopener">CVE-2023-4836</a>
+      is a recent instance in a WordPress plugin; First American Title's
+      2019 breach of over 800 million real-estate documents (Social
+      Security numbers, mortgage records) came from this exact class of
+      flaw in a production application.</p>
     `,
   },
   {
@@ -88,6 +97,13 @@ export const intermediateChallenges = [
       from using XOR obfuscation, but defenders should never mistake it
       for encryption — layered encoding without real cryptographic
       strength is a speed bump, not a lock.</p>
+      <p><strong>Real-world example:</strong> single- and multi-byte XOR
+      "encryption" shows up constantly in real malware analysis — banking
+      trojans and droppers such as Emotet and Qakbot have used exactly
+      this technique to obfuscate their configuration data and
+      command-and-control strings, and analysts break it the same way you
+      just did: brute-force the key space and look for what turns
+      printable.</p>
     `,
   },
   {
@@ -133,6 +149,12 @@ export const intermediateChallenges = [
       sensitive data at a serious threat level use dedicated
       steganalysis tooling and treat unexplained image traffic (unusual
       volume, unusual destinations) as worth inspecting.</p>
+      <p><strong>Real-world example:</strong> this isn't just a CTF
+      trick — real malware families including Duqu, Zeus/Zbot, and
+      Gatak/Stegoloader have all exfiltrated stolen data or hidden their
+      configuration by embedding it in ordinary-looking image files,
+      specifically to slip past filters that only inspect what an image
+      renders as.</p>
     `,
   },
   {
@@ -181,6 +203,12 @@ export const intermediateChallenges = [
       this automatically now, but internal tools, personal accounts, and
       press/marketing photos often don't); awareness training on checking
       before posting is exactly this kind of exercise.</p>
+      <p><strong>Real-world example:</strong> in 2012, journalists
+      photographing fugitive John McAfee published a photo of him with
+      GPS EXIF data intact — internet sleuths pinpointed his exact
+      location in Guatemala within hours, and he was arrested the next
+      day. The same pattern has been documented in domestic-violence
+      stalking cases and in exposing activists to hostile governments.</p>
     `,
   },
 ];

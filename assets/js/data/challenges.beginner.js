@@ -41,6 +41,14 @@ export const beginnerChallenges = [
       <p><strong>What prevents this:</strong> automated secret-scanning in
       CI/CD pipelines, pre-commit hooks that block credential-shaped
       strings, and code review before anything reaches production.</p>
+      <p><strong>Real-world example:</strong> classified as
+      <a href="https://cwe.mitre.org/data/definitions/798.html" target="_blank" rel="noopener">CWE-798</a>
+      (Use of Hard-Coded Credentials). Uber's 2016 breach of 57 million
+      riders' and drivers' records traced back to AWS credentials an
+      engineer had committed to a private GitHub repo — the exact pattern
+      you just found. <a href="https://nvd.nist.gov/vuln/detail/CVE-2017-14143" target="_blank" rel="noopener">CVE-2017-14143</a>
+      is a similar case: a hardcoded secret cookie value baked into the
+      Kaltura media server.</p>
     `,
   },
   {
@@ -85,6 +93,10 @@ export const beginnerChallenges = [
       <p><strong>What prevents this:</strong> use vetted, modern
       cryptography (AES, etc.) for anything that actually needs
       confidentiality, and never treat encoding schemes as encryption.</p>
+      <p><strong>Real-world note:</strong> there's no CVE for "someone used
+      ROT13" — because nobody with real security requirements should ever
+      rely on it. That's exactly the lesson: this technique's only honest
+      use is a puzzle, not protection.</p>
     `,
   },
   {
@@ -132,6 +144,14 @@ export const beginnerChallenges = [
       to the exact expected end and flags trailing data, and content
       scanners that hash/inspect entire files rather than just what
       renders.</p>
+      <p><strong>Real-world example:</strong> this "append after the real
+      end" trick is called a polyglot file.
+      <a href="https://nvd.nist.gov/vuln/detail/CVE-2020-1464" target="_blank" rel="noopener">CVE-2020-1464</a>
+      ("GlueBall") let attackers append a malicious JAR to a
+      legitimately-signed Windows installer without invalidating its
+      signature; <a href="https://nvd.nist.gov/vuln/detail/CVE-2020-1599" target="_blank" rel="noopener">CVE-2020-1599</a>
+      did the same trick with script data appended after a signed Windows
+      executable.</p>
     `,
   },
   {
@@ -178,6 +198,10 @@ export const beginnerChallenges = [
       <p><strong>What prevents this:</strong> security-awareness training
       like this one, and periodic audits of public-facing pages and
       profiles for accidental data leakage.</p>
+      <p><strong>Real-world note:</strong> this is exactly the recon phase
+      real attackers do before a targeted phishing attempt — quietly
+      reading everything public about a target, including the parts
+      nobody expects to be read.</p>
     `,
   },
 ];

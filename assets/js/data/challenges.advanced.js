@@ -40,6 +40,13 @@ export const advancedChallenges = [
       token, always verify signatures using a fixed server-side secret or
       key, and use a well-vetted JWT library rather than a hand-rolled
       implementation.</p>
+      <p><strong>Real-world example:</strong> in 2015, researcher Tim
+      McLean's disclosure of
+      <a href="https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/" target="_blank" rel="noopener">critical JWT library vulnerabilities</a>
+      showed multiple popular JWT libraries across languages accepted
+      exactly this alg:none forgery.
+      <a href="https://nvd.nist.gov/vuln/detail/CVE-2015-9235" target="_blank" rel="noopener">CVE-2015-9235</a>
+      is the CVE assigned for the node-jsonwebtoken library specifically.</p>
     `,
   },
   {
@@ -90,6 +97,15 @@ export const advancedChallenges = [
       (2048-bit minimum, 3072/4096-bit for longer-term protection),
       generating keys with established, audited cryptographic libraries,
       and never implementing RSA key generation by hand in a real system.</p>
+      <p><strong>Real-world example:</strong>
+      <a href="https://nvd.nist.gov/vuln/detail/CVE-2015-0204" target="_blank" rel="noopener">CVE-2015-0204</a>
+      (the FREAK attack) let attackers downgrade connections to
+      factorable 512-bit "export-grade" RSA keys.
+      <a href="https://nvd.nist.gov/vuln/detail/CVE-2017-15361" target="_blank" rel="noopener">CVE-2017-15361</a>
+      (ROCA) was worse: a flawed key-generation library produced
+      factorable RSA keys up to 4096 bits, compromising over 750,000
+      Estonian national ID cards along with TPM chips and YubiKey 4
+      security tokens.</p>
     `,
   },
   {
@@ -134,6 +150,11 @@ export const advancedChallenges = [
       automated alerting (a SIEM) tuned to patterns like failed-login
       bursts and anomalous field values, plus log retention long enough
       to investigate after the fact.</p>
+      <p><strong>Real-world note:</strong> this exact behavior — a burst
+      of failed logins from one source, followed by unusual data in a
+      request — is the classic pattern security teams train to watch for.
+      It's precisely what public breach post-mortems repeatedly flag, in
+      hindsight, as "the warning that got missed."</p>
     `,
   },
   {
@@ -181,6 +202,13 @@ export const advancedChallenges = [
       carries over when reusing accounts across professional and
       personal/anonymous contexts — a core theme of spear-phishing
       resistance training.</p>
+      <p><strong>Real-world example:</strong> in 2018, the fitness app
+      Strava published a global heatmap aggregating users' public
+      activity data. Researchers used it to identify the layout and
+      patrol routes of secret military bases in Syria and Afghanistan,
+      purely by correlating who was running where. Small, individually
+      harmless data points, aggregated, can reveal far more than any one
+      of them suggests alone.</p>
     `,
   },
 ];
