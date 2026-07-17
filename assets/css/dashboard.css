@@ -7,10 +7,10 @@
 .stat-tile {
   border: 1px solid var(--ink-700);
   background: var(--ink-900);
-  border-radius: 6px;
+  border-radius: 14px;
   padding: 1rem 1.1rem;
 }
-.stat-tile .value { font-family: var(--font-display); font-size: 1.7rem; color: var(--accent-amber); }
+.stat-tile .value { font-family: var(--font-display); font-size: 1.7rem; color: var(--accent-lime); }
 .stat-tile .label { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--paper-dim); }
 
 .breakdown-section { margin-bottom: 2rem; }
@@ -18,8 +18,8 @@
 
 .bar-row { display: grid; grid-template-columns: 140px 1fr 70px; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; }
 .bar-row .name { font-family: var(--font-mono); font-size: 0.85rem; }
-.bar-track { height: 10px; background: var(--ink-800); border-radius: 5px; overflow: hidden; border: 1px solid var(--ink-700); }
-.bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-teal), var(--accent-amber)); }
+.bar-track { height: 10px; background: var(--ink-800); border-radius: 999px; overflow: hidden; border: 1px solid var(--ink-700); }
+.bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-green), var(--accent-lime)); }
 .bar-row .frac { font-family: var(--font-mono); font-size: 0.75rem; color: var(--paper-dim); text-align: right; }
 
 .solved-list { list-style: none; padding: 0; }
@@ -30,7 +30,7 @@
 }
 .solved-list .ts { color: var(--paper-dim); }
 
-.reset-row { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px dashed var(--ink-700); }
+.reset-row { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--ink-700); }
 .reset-row p { color: var(--paper-dim); font-size: 0.85rem; }
 
 .leaderboard-list { list-style: none; padding: 0; margin: 1.5rem 0; }
@@ -41,17 +41,17 @@
   gap: 1rem;
   padding: 0.85rem 1.1rem;
   border: 1px solid var(--ink-700);
-  border-radius: 6px;
+  border-radius: 14px;
   margin-bottom: 0.6rem;
   background: var(--ink-900);
 }
 .leaderboard-row .rank { font-family: var(--font-display); font-size: 1.1rem; color: var(--paper-dim); }
 .leaderboard-row .name { font-family: var(--font-mono); font-size: 0.95rem; }
 .leaderboard-row .solved { font-family: var(--font-mono); font-size: 0.8rem; color: var(--paper-dim); }
-.leaderboard-row .score { font-family: var(--font-mono); font-size: 0.9rem; color: var(--accent-amber); font-weight: 600; }
+.leaderboard-row .score { font-family: var(--font-mono); font-size: 0.9rem; color: var(--accent-lime); font-weight: 600; }
 
-.leaderboard-row.rank-1 { border-color: var(--accent-amber); }
-.leaderboard-row.rank-1 .rank { color: var(--accent-amber); }
+.leaderboard-row.rank-1 { border-color: var(--accent-lime); }
+.leaderboard-row.rank-1 .rank { color: var(--accent-lime); }
 .leaderboard-row.rank-2 { border-color: var(--paper-dim); }
-.leaderboard-row.rank-3 { border-color: var(--accent-teal); }
-.leaderboard-row.rank-3 .rank { color: var(--accent-teal); }
+.leaderboard-row.rank-3 { border-color: var(--accent-green); }
+.leaderboard-row.rank-3 .rank { color: var(--accent-green); }
