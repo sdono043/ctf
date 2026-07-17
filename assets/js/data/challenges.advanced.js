@@ -26,7 +26,7 @@ export const advancedChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
-    debrief: `
+    recap: `
       <p><strong>How this actually happens:</strong> a developer implements
       JWT verification themselves, or uses a library whose older API made
       it easy to get wrong, and writes code that trusts the algorithm
@@ -92,7 +92,7 @@ export const advancedChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
-    debrief: `
+    recap: `
       <p><strong>How this actually happens:</strong> RSA's entire security
       rests on the modulus <strong>n</strong> being infeasible to factor —
       which means it depends entirely on the two primes that generated it
@@ -153,7 +153,7 @@ export const advancedChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
-    debrief: `
+    recap: `
       <p><strong>How this actually unfolds:</strong> an attacker with a
       list of leaked username/password combinations (from some unrelated
       previous breach) runs them against a login page automatically —
@@ -211,7 +211,7 @@ export const advancedChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
-    debrief: `
+    recap: `
       <p><strong>How this actually unfolds:</strong> people reuse
       identifying details — a specific hobby, a join date, a writing
       style — across accounts they think of as separate (a professional
@@ -281,7 +281,7 @@ export const advancedChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
-    debrief: `
+    recap: `
       <p><strong>How this actually happens:</strong> a developer builds a
       genuinely useful feature — import data from a URL, generate a
       thumbnail from an image link, test a webhook — that fetches

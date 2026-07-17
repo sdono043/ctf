@@ -76,7 +76,7 @@ h1, h2, h3 {
 
 main { max-width: 980px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
 
-.dossier-note {
+.callout-note {
   border-left: 3px solid var(--accent-lime);
   border-radius: 0 10px 10px 0;
   padding: 0.75rem 1rem;
@@ -146,7 +146,7 @@ main { max-width: 980px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
 .card .points { font-family: var(--font-mono); color: var(--accent-lime); font-size: 0.8rem; }
 
 .card.solved { border-color: var(--accent-green); }
-.card .solved-stamp {
+.card .solved-badge {
   position: absolute; top: 0.9rem; right: 0.9rem;
   font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em;
   color: var(--accent-green); border: 1px solid var(--accent-green);

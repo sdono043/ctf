@@ -34,7 +34,7 @@
 .hint-reveal-btn {
   font-family: var(--font-mono); font-size: 0.82rem;
 }
-.hint-redaction {
+.hint-mask {
   position: relative;
   background: var(--ink-900);
   border: 1px solid var(--ink-700);
@@ -42,13 +42,13 @@
   padding: 0.7rem 0.9rem;
   overflow: hidden;
 }
-.hint-redaction .bar {
+.hint-mask .bar {
   position: absolute; inset: 0;
   background: var(--ink-700);
   transform-origin: left;
-  animation: declassify 0.5s ease forwards;
+  animation: reveal-hint 0.5s ease forwards;
 }
-@keyframes declassify {
+@keyframes reveal-hint {
   from { transform: scaleX(1); }
   to { transform: scaleX(0); }
 }
@@ -65,18 +65,18 @@
 .flag-feedback.correct { color: var(--accent-green); }
 .flag-feedback.incorrect { color: var(--accent-red); }
 
-.stamp-success {
+.success-badge {
   display: inline-block; border: 3px solid var(--accent-green); color: var(--accent-green);
   font-family: var(--font-display); padding: 0.5rem 1.2rem; border-radius: 999px;
   letter-spacing: 0; margin-top: 0.5rem;
-  animation: stamp-slam 0.35s cubic-bezier(.2,1.6,.4,1);
+  animation: pop-in 0.35s cubic-bezier(.2,1.6,.4,1);
 }
-@keyframes stamp-slam {
+@keyframes pop-in {
   from { opacity: 0; transform: scale(0.6); }
   to { opacity: 1; transform: scale(1); }
 }
 
-.debrief-section {
+.recap-section {
   margin-top: 2rem;
   padding: 1.1rem 1.4rem;
   border: 1px solid var(--accent-green);
@@ -85,7 +85,7 @@
   background: rgba(23, 201, 100, 0.06);
   animation: rise 0.4s ease;
 }
-.debrief-section h2 {
+.recap-section h2 {
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -93,9 +93,9 @@
   color: var(--accent-green);
   margin: 0 0 0.6rem;
 }
-.debrief-body p { margin: 0 0 0.75rem; color: var(--paper-dim); font-size: 0.92rem; }
-.debrief-body p:last-child { margin-bottom: 0; }
-.debrief-body strong { color: var(--paper); }
+.recap-body p { margin: 0 0 0.75rem; color: var(--paper-dim); font-size: 0.92rem; }
+.recap-body p:last-child { margin-bottom: 0; }
+.recap-body strong { color: var(--paper); }
 
 .shake { animation: shake 0.4s; }
 @keyframes shake {

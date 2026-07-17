@@ -13,7 +13,7 @@ export function el(tag, attrs = {}, children = []) {
   return node;
 }
 
-export const TIER_LABEL = { beginner: "Recruit", intermediate: "Field Agent", advanced: "Classified" };
+export const TIER_LABEL = { beginner: "Beginner", intermediate: "Intermediate", advanced: "Advanced" };
 export const CATEGORY_LABEL = { web: "Web Exploitation", crypto: "Cryptography", forensics: "Forensics", osint: "OSINT" };
 
 export function qs(name, fallback = null) {

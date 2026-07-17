@@ -27,7 +27,7 @@ export const beginnerChallenges = [
       normalize: { trim: true, lowercase: true },
       formatHint: "flag{...}",
     },
-    debrief: `
+    recap: `
       <p><strong>How this actually happens:</strong> nobody decides to ship
       credentials to production on purpose. A developer hardcodes a key or
       leaves a "remove before launch" note while testing locally, it works,
@@ -86,7 +86,7 @@ export const beginnerChallenges = [
       normalize: { trim: true, lowercase: true },
       formatHint: "flag{...}",
     },
-    debrief: `
+    recap: `
       <p><strong>How this actually happens:</strong> someone needs to
       "obscure" data quickly — a config value, a URL parameter, a note —
       and reaches for a simple substitution or encoding scheme because
@@ -142,7 +142,7 @@ export const beginnerChallenges = [
       normalize: { trim: true, lowercase: true },
       formatHint: "flag{...}",
     },
-    debrief: `
+    recap: `
       <p><strong>How this actually happens:</strong> file formats have
       well-defined structures, but many parsers and viewers stop reading at
       the "logical end" without checking whether anything follows — so
@@ -202,7 +202,7 @@ export const beginnerChallenges = [
       normalize: { trim: true, lowercase: true },
       formatHint: "flag{...}",
     },
-    debrief: `
+    recap: `
       <p><strong>How this actually happens:</strong> nobody sits down and
       says "let's hide sensitive data in the page." It happens by
       accident — a developer adds a hidden field for legitimate reasons

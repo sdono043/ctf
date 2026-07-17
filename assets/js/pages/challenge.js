@@ -40,7 +40,7 @@ function render() {
 
   if (state?.solved) {
     root.append(
-      el("div", { class: "stamp-success" }, "Solved")
+      el("div", { class: "success-badge" }, "Solved")
     );
   }
 
@@ -78,20 +78,20 @@ function render() {
 
   root.append(renderHints(challenge, state));
 
-  const debriefContainer = el("div", {});
-  root.append(renderFlagForm(challenge, state, debriefContainer));
-  root.append(debriefContainer);
+  const recapContainer = el("div", {});
+  root.append(renderFlagForm(challenge, state, recapContainer));
+  root.append(recapContainer);
 
-  if (state?.solved) showDebrief(debriefContainer, challenge);
+  if (state?.solved) showRecap(recapContainer, challenge);
 }
 
-function showDebrief(container, challenge) {
+function showRecap(container, challenge) {
   if (container.dataset.shown) return;
   container.dataset.shown = "true";
   container.append(
-    el("div", { class: "debrief-section" }, [
-      el("h2", {}, "Debrief: Why This Matters"),
-      el("div", { class: "debrief-body", html: challenge.debrief }),
+    el("div", { class: "recap-section" }, [
+      el("h2", {}, "Why This Matters"),
+      el("div", { class: "recap-body", html: challenge.recap }),
     ])
   );
 }
@@ -129,7 +129,7 @@ function renderHints(challenge, state) {
       const item = el("div", { class: "hint-item" });
       if (i < revealed) {
         item.append(
-          el("div", { class: "hint-redaction" }, [
+          el("div", { class: "hint-mask" }, [
             el("span", {}, hint.text),
             hint.cost ? el("span", { class: "hint-cost" }, `−${hint.cost} pts`) : null,
           ])
@@ -154,7 +154,7 @@ function renderHints(challenge, state) {
   return section;
 }
 
-function renderFlagForm(challenge, state, debriefContainer) {
+function renderFlagForm(challenge, state, recapContainer) {
   const wrap = el("div", {});
 
   if (state?.solved) {
@@ -181,8 +181,8 @@ function renderFlagForm(challenge, state, debriefContainer) {
         feedback.textContent = `Correct! +${pointsEarned} points.`;
         input.disabled = true;
         form.querySelector("button").disabled = true;
-        wrap.append(el("div", { class: "stamp-success" }, "Access Granted"));
-        showDebrief(debriefContainer, challenge);
+        wrap.append(el("div", { class: "success-badge" }, "Correct!"));
+        showRecap(recapContainer, challenge);
       } else {
         feedback.className = "flag-feedback incorrect";
         feedback.textContent = "Not quite — try again.";

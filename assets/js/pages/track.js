@@ -12,7 +12,7 @@ const grid = el("div", { class: "card-grid" });
 challenges.forEach((c, i) => {
   const solved = Boolean(progress.challenges[c.id]?.solved);
   const card = el("div", { class: `card${solved ? " solved" : ""}` }, [
-    solved ? el("span", { class: "solved-stamp" }, "SOLVED") : null,
+    solved ? el("span", { class: "solved-badge" }, "SOLVED") : null,
     el("span", { class: "badge mono" }, CATEGORY_LABEL[c.category]),
     el("h3", {}, c.title),
     el("p", {}, c.summary),

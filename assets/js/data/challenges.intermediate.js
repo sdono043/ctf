@@ -29,7 +29,7 @@ export const intermediateChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
-    debrief: `
+    recap: `
       <p><strong>How this actually happens:</strong> a developer builds an
       endpoint that looks up a record by ID — simple, fast, easy to debug —
       and either assumes "you'd have to guess the ID" is protection enough,
@@ -90,7 +90,7 @@ export const intermediateChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
-    debrief: `
+    recap: `
       <p><strong>How this actually happens:</strong> a developer, or a
       malware author, wants to hide data from casual inspection without
       the overhead of real cryptography, and single-byte XOR is the
@@ -147,7 +147,7 @@ export const intermediateChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
-    debrief: `
+    recap: `
       <p><strong>How this actually happens:</strong> unlike most of the
       other bugs in this course, this one is rarely an accident — LSB
       steganography is a deliberate technique. It's legitimate when used
@@ -209,7 +209,7 @@ export const intermediateChallenges = [
       normalize: { trim: true, lowercase: false },
       formatHint: "flag{...}",
     },
-    debrief: `
+    recap: `
       <p><strong>How this actually happens:</strong> phones and cameras
       embed GPS coordinates into a photo's metadata automatically whenever
       location services are on — most people's habit is to just take the

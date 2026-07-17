@@ -9,9 +9,9 @@ const stats = summarize(allChallenges, progress);
 const root = document.getElementById("tier-root");
 
 const tiers = [
-  { key: "beginner", label: "Recruit", href: "tracks/beginner.html", desc: "Start here. Heavy hand-holding, free staged hints, gentle intro to core techniques." },
-  { key: "intermediate", label: "Field Agent", href: "tracks/intermediate.html", desc: "Less hand-holding, hints cost points, patterns closer to real-world bugs." },
-  { key: "advanced", label: "Classified", href: "tracks/advanced.html", desc: "Few, pricey hints. Meant to feel like an unassisted real puzzle." },
+  { key: "beginner", label: "Beginner", href: "tracks/beginner.html", desc: "Start here. Heavy hand-holding, free staged hints, gentle intro to core techniques." },
+  { key: "intermediate", label: "Intermediate", href: "tracks/intermediate.html", desc: "Less hand-holding, hints cost points, patterns closer to real-world bugs." },
+  { key: "advanced", label: "Advanced", href: "tracks/advanced.html", desc: "Few, pricey hints. Meant to feel like an unassisted real puzzle." },
 ];
 
 const grid = el("div", { class: "card-grid" });
