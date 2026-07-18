@@ -239,4 +239,70 @@ export const beginnerChallenges = [
       publishing, not just how it renders.</p>
     `,
   },
+  {
+    id: "beg-web-2",
+    tier: "beginner",
+    category: "web",
+    title: "Patch or Panic",
+    points: 75,
+    summary: "A real security advisory names an affected version range. Which site in the fleet actually matches it?",
+    prompt: `
+      <p>Security teams publish advisories like this one all the time — a
+      real excerpt, condensed:</p>
+      <blockquote style="border-left:3px solid var(--accent-lime);padding:0.6rem 1rem;margin:1rem 0;background:rgba(163,230,53,0.07);border-radius:0 10px 10px 0;">
+        <p style="margin:0 0 0.5rem;"><strong>Pre-authentication RCE in WordPress Core</strong> —
+        exploitable by an anonymous user on a stock install, no plugins required.</p>
+        <p style="margin:0;"><strong>Affected versions:</strong> 6.9.0–6.9.4 and 7.0.0–7.0.1.
+        Versions ≤6.8.5 are not affected. Fixed in 7.0.2, or 6.9.5 for sites staying on the 6.9 branch.</p>
+      </blockquote>
+      <p>Below is a fleet status page tracking WordPress core versions across four
+      internal sites. Read the advisory carefully and figure out which single site
+      is actually sitting in the affected range right now — the other three are
+      either too old to matter or already patched.</p>
+      <p><strong>Try:</strong> once you've identified the one at-risk site, view
+      the page's source and look for a comment near its row.</p>
+    `,
+    embed: { type: "iframe", src: "challenges/beg-web-2/index.html", height: 260, sandbox: "allow-scripts" },
+    hints: [
+      { text: "Check each version number against the ranges in the advisory one at a time — don't just guess from the \"Notes\" column.", cost: 0 },
+      { text: "\"6.8.5\" and \"6.9.5\" both fall outside the affected ranges — one is too old, the other is the patched release.", cost: 0 },
+      { text: "Once you know which row is genuinely affected and unpatched, view page source and look for an HTML comment right above that row.", cost: 0 },
+    ],
+    flag: {
+      algorithm: "SHA-256",
+      hash: "445d2be7b836ce688a0f2a6a55a1e7fee404a9614850f6c4f4431bd0e78824c9",
+      normalize: { trim: true, lowercase: true },
+      formatHint: "flag{...}",
+    },
+    recap: `
+      <p><strong>How this actually happens:</strong> a fleet of sites accumulates
+      version drift over time — some get upgraded promptly, some sit on a "long-term
+      hold," some are mid-way through a maintenance window when an advisory drops.
+      Nobody consciously decides to leave a site exposed; it's simply what happens
+      when patching isn't tracked centrally and an advisory has to be checked
+      against every instance by hand.</p>
+      <p><strong>What an attacker actually does, and the tools they'd use:</strong>
+      exactly what you just did, but at scale — read a public advisory, then check
+      which real-world instances match the affected version range. Tools like
+      <strong>Shodan</strong> and <strong>Censys</strong> let anyone search the
+      entire internet for servers exposing a specific version banner, turning "is
+      anything out there still vulnerable" into a single search query the moment
+      an advisory goes public. This is also exactly why serious researchers
+      sometimes withhold full exploitation detail when disclosing a severe bug —
+      as the real advisory behind this challenge did — to give defenders a head
+      start on exactly this kind of fleet check before technical details spread.</p>
+      <p><strong>What prevents this:</strong> centralized inventory of what
+      version every instance is running, subscribing to vendor security advisories,
+      and patching on a schedule fast enough that "pending maintenance window"
+      doesn't stretch past when an active advisory is published.</p>
+      <p><strong>Real-world example:</strong> this challenge is based on a real
+      disclosure — Searchlight Cyber's
+      <a href="https://slcyber.io/research-center/wp2shell-pre-authentication-rce-in-wordpress-core/" target="_blank" rel="noopener">WP2Shell advisory</a>,
+      a pre-authentication remote code execution bug in WordPress core itself
+      (not a plugin) affecting an estimated share of the roughly 500 million sites
+      built on WordPress. Core RCEs exploitable by anonymous users are rare
+      precisely because WordPress core is heavily audited — most real-world
+      WordPress compromises come from third-party plugins and themes instead.</p>
+    `,
+  },
 ];

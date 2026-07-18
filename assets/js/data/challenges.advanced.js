@@ -244,6 +244,80 @@ export const advancedChallenges = [
     `,
   },
   {
+    id: "adv-web-3",
+    tier: "advanced",
+    category: "web",
+    title: "The Gap in the Rule",
+    points: 250,
+    summary: "Five sites, five different responses to the same advisory. Only one is still actually exploitable.",
+    prompt: `
+      <p>The same WordPress core advisory from earlier ("Patch or Panic",
+      "Batch Job") gave defenders exactly three ways to protect a site while
+      waiting to patch:</p>
+      <ol>
+        <li>Upgrade to 7.0.2 (or 6.9.5 on the 6.9 branch).</li>
+        <li>Install a plugin that blocks anonymous access to the REST API
+        entirely.</li>
+        <li>Block <em>both</em> <code>/wp-json/batch/v1</code> and
+        <code>?rest_route=/batch/v1</code> at a WAF level — WordPress's REST
+        API is reachable through either URL form, so a rule covering only
+        one leaves the other wide open.</li>
+      </ol>
+      <p>Below is a small fleet of five sites and how each one responded to
+      the advisory. Four are genuinely safe right now, for different valid
+      reasons. One only <em>looks</em> safe — a WAF rule went in, a ticket
+      got closed, but the endpoint is still reachable through its other URL
+      form. Find that site.</p>
+      <p><a href="assets/data/web/adv-web-3-fleet.json" download>Download the fleet status (JSON)</a></p>
+    `,
+    assets: [{ type: "data", path: "assets/data/web/adv-web-3-fleet.json", label: "adv-web-3-fleet.json" }],
+    hints: [
+      { text: "Rule out sites by version first: anything ≤6.8.5 or already upgraded to a fixed release is safe regardless of WAF rules.", cost: 40 },
+      { text: "Of the remaining affected-version sites, one has the anonymous-REST-blocking plugin — that covers every route, no gaps possible.", cost: 35 },
+      { text: "Compare the two remaining sites' \"waf_rules_blocking\" arrays against the advisory's two named URL forms — one array is missing an entry.", cost: 35 },
+    ],
+    flag: {
+      algorithm: "SHA-256",
+      hash: "cdc54170370968152cec45e6ca6cdf046ea0ca7bb87cf0de3274b61b1e2bd352",
+      normalize: { trim: true, lowercase: false },
+      formatHint: "flag{...}",
+    },
+    recap: `
+      <p><strong>How this actually happens:</strong> a WAF rule gets written
+      against the exact path named in an advisory, a ticket gets marked
+      resolved, and nobody re-checks it after something unrelated changes —
+      here, a pretty-permalinks setting that made the site's REST API
+      reachable through a second URL form the original rule never accounted
+      for. This is one of the most common gaps in real security operations:
+      a mitigation that was correct the day it was written silently stops
+      being complete.</p>
+      <p><strong>What an attacker actually does, and the tools they'd use:</strong>
+      when a direct path is blocked, trying alternate routes to the same
+      functionality is a standard move — WAF and filter bypass testing tools
+      like <strong>Burp Suite</strong> and dedicated WAF-bypass wordlists
+      exist specifically to enumerate alternate encodings, paths, and
+      parameter forms that reach the same backend logic a blocked path does.
+      For WordPress specifically, knowing that <code>?rest_route=</code> is a
+      built-in alias for the entire REST API (it exists for sites that don't
+      use pretty permalinks) is exactly the kind of platform-specific detail
+      that turns "this looks patched" into "this isn't, actually."</p>
+      <p><strong>What prevents this:</strong> mitigations should be verified
+      by actually testing the thing they claim to block (hit the endpoint
+      both ways and confirm it's rejected), not just by confirming a rule
+      was added; and any WAF rule should be re-reviewed whenever related
+      configuration changes, not treated as permanently correct once closed.</p>
+      <p><strong>Real-world example:</strong> this exact gap — one WAF rule
+      covering one URL form of an endpoint while an alias form stays open —
+      is drawn directly from the mitigation guidance in Searchlight Cyber's
+      <a href="https://slcyber.io/research-center/wp2shell-pre-authentication-rce-in-wordpress-core/" target="_blank" rel="noopener">WP2Shell advisory</a>,
+      which explicitly names both URL forms precisely because WordPress's
+      REST API has always been reachable either way. Incomplete mitigations
+      that miss an alias path or encoding are one of the most common reasons
+      a "patched" system turns out not to be, across virtually every WAF
+      deployment in production.</p>
+    `,
+  },
+  {
     id: "adv-web-2",
     tier: "advanced",
     category: "web",

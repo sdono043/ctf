@@ -1,0 +1,44 @@
+{
+  "advisory_mitigation_options": [
+    "Upgrade WordPress to 7.0.2, or 6.9.5 if staying on the 6.9 branch.",
+    "Install a plugin that blocks anonymous access to the REST API entirely.",
+    "Block /wp-json/batch/v1 AND ?rest_route=/batch/v1 at a WAF level (both URL forms must be covered)."
+  ],
+  "sites": [
+    {
+      "site": "alpha.example.com",
+      "wordpress_version": "6.8.5",
+      "waf_rules_blocking": [],
+      "anonymous_rest_blocked_by_plugin": false,
+      "notes": "Never upgraded past the 6.8 branch — ops considers this stable and low-priority."
+    },
+    {
+      "site": "bravo.example.net",
+      "wordpress_version": "7.0.2",
+      "waf_rules_blocking": [],
+      "anonymous_rest_blocked_by_plugin": false,
+      "notes": "Upgraded the same afternoon the advisory went out."
+    },
+    {
+      "site": "charlie.example.org",
+      "wordpress_version": "6.9.2",
+      "waf_rules_blocking": ["/wp-json/batch/v1"],
+      "anonymous_rest_blocked_by_plugin": false,
+      "notes": "WAF ticket closed as 'batch endpoint blocked' — reviewer signed off without re-checking after the pretty-permalinks setting changed. flag{th3_gap_1n_th3_rul3-3fd2633a86}"
+    },
+    {
+      "site": "delta.example.io",
+      "wordpress_version": "7.0.1",
+      "waf_rules_blocking": ["/wp-json/batch/v1", "?rest_route=/batch/v1"],
+      "anonymous_rest_blocked_by_plugin": false,
+      "notes": "Upgrade postponed a sprint, so security added both WAF rules named in the advisory as a stopgap."
+    },
+    {
+      "site": "echo.example.co",
+      "wordpress_version": "6.9.4",
+      "waf_rules_blocking": [],
+      "anonymous_rest_blocked_by_plugin": true,
+      "notes": "Runs a 'lock down REST API' plugin site-wide, so no anonymous request reaches any REST route at all."
+    }
+  ]
+}

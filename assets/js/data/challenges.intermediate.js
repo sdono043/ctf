@@ -238,4 +238,72 @@ export const intermediateChallenges = [
       stalking cases and in exposing activists to hostile governments.</p>
     `,
   },
+  {
+    id: "int-forensics-2",
+    tier: "intermediate",
+    category: "forensics",
+    title: "Batch Job",
+    points: 150,
+    summary: "A real advisory named one exact endpoint to watch for. Find it in the traffic.",
+    prompt: `
+      <p>A recent WordPress core advisory (the same one from the "Patch or
+      Panic" challenge) named a specific REST API endpoint as the one to lock
+      down while sites wait to be patched: <code>/wp-json/batch/v1</code> —
+      and its alias form, <code>?rest_route=/batch/v1</code>, since WordPress's
+      REST API can be reached either way depending on whether pretty
+      permalinks are enabled.</p>
+      <p>Below is a slice of access log traffic from a site that hasn't
+      patched yet. Most of it is normal — legitimate visitors, normal
+      <code>/wp-json/wp/v2/...</code> API calls, the occasional bot. Somewhere
+      in it, one IP address is anonymously probing that exact batch endpoint,
+      in both forms, in a tight burst.</p>
+      <p><a href="assets/downloads/forensics/int-forensics-2-rest.log" download>Download the raw log file</a></p>
+    `,
+    assets: [{ type: "log", path: "assets/downloads/forensics/int-forensics-2-rest.log", label: "int-forensics-2-rest.log" }],
+    tool: { type: "log-filter", url: "assets/downloads/forensics/int-forensics-2-rest.log" },
+    hints: [
+      { text: "Filter for \"batch\" to isolate every request touching that endpoint, in either URL form.", cost: 20 },
+      { text: "All of the matching lines come from the same IP address, in a burst just a few seconds apart.", cost: 15 },
+      { text: "Read every line from that IP in order — the last one carries something extra in its User-Agent string. Decode it.", cost: 15 },
+    ],
+    flag: {
+      algorithm: "SHA-256",
+      hash: "65c7a4797d59c5b2f56240c7f669b47dd72241049780df910810844b4228affe",
+      normalize: { trim: true, lowercase: false },
+      formatHint: "flag{...}",
+    },
+    recap: `
+      <p><strong>How this actually unfolds:</strong> once a severe advisory
+      names a specific endpoint — even without full exploitation detail —
+      that endpoint immediately becomes a target for automated scanning
+      across the internet. Attackers don't need the full technical writeup to
+      start probing; the advisory itself, plus the mitigation guidance
+      naming the exact paths to block, is often enough of a signal that
+      "something reachable here is worth hitting first."</p>
+      <p><strong>What an attacker actually does, and the tools they'd
+      use:</strong> mass, opportunistic scanning against a named endpoint is
+      usually automated — simple scripts (<code>python-requests</code>,
+      <code>curl</code> in a loop) hitting the same path across a list of
+      known WordPress sites, trying both the pretty-permalink form and the
+      <code>?rest_route=</code> alias in case one is filtered and the other
+      isn't. On the defensive side, this is exactly what a SIEM or log
+      pipeline (Splunk, the open-source ELK stack) is built to flag
+      automatically — a burst of requests to one sensitive path from a
+      single source, the same pattern you just isolated by hand with a
+      simple filter.</p>
+      <p><strong>What prevents this:</strong> logging and alerting on
+      requests to newly-named sensitive endpoints the moment an advisory
+      names them, not just patching — a WAF rule or log alert can buy time
+      even before every instance is upgraded.</p>
+      <p><strong>Real-world example:</strong> this endpoint and its two
+      access forms are named directly in Searchlight Cyber's
+      <a href="https://slcyber.io/research-center/wp2shell-pre-authentication-rce-in-wordpress-core/" target="_blank" rel="noopener">WP2Shell advisory</a>
+      for WordPress core — the researchers withheld the underlying
+      vulnerability's technical details specifically to avoid handing
+      attackers a roadmap, but the mitigation guidance itself (block
+      anonymous access to this exact endpoint, in both forms) is exactly the
+      kind of actionable signal defenders watch for the moment a serious
+      advisory drops, before every affected site has had time to patch.</p>
+    `,
+  },
 ];
